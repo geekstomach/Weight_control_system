@@ -11,7 +11,7 @@ public class Consumer implements Runnable{
 
     Long zeroValue;
 
-    private final BlockingQueue inputQueue;
+    private final BlockingQueue <byte[]> inputQueue;
 
     public BlockingQueue<Long> getOutputQueue() {
         return outputQueue;
@@ -20,7 +20,7 @@ public class Consumer implements Runnable{
     private final LinkedBlockingQueue<Long> outputQueue;
 
 
-    public Consumer(BlockingQueue q){
+    public Consumer(BlockingQueue<byte[]>  q){
         inputQueue = q;
         outputQueue= new LinkedBlockingQueue<>();
         zeroValue=0L;
@@ -42,6 +42,7 @@ public class Consumer implements Runnable{
     void consume(Object x) {
         System.out.printf("[%s] Потреблено  : %s %n", Thread .currentThread().getName(),getWeightDataLong((byte[]) x));
         try {
+            //TODO проверить правильность обнуления начального значения
             outputQueue.put(getWeightDataLong((byte[]) x)-zeroValue);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -53,7 +54,7 @@ public class Consumer implements Runnable{
         System.arraycopy(numRead, 2, weightData, 0, 8);
         return new BigInteger(weightData);}
 
-
+    //TODO проверить правильность получаемых данных
     private long getWeightDataLong(byte[] numRead) {
         byte[] weightData = new byte[8];
         System.arraycopy(numRead, 2, weightData, 0, 8);

@@ -33,7 +33,7 @@ public class MainController implements Initializable {
 
     final int WINDOW_SIZE = 10;
 
-    BlockingQueue q = new LinkedBlockingQueue();
+    BlockingQueue<byte[]> q = new LinkedBlockingQueue<byte[]>();
     Producer p = new Producer(q);
     Consumer c1 = new Consumer(q);
 
@@ -106,7 +106,7 @@ public class MainController implements Initializable {
             }}, 0, 1000, TimeUnit.MILLISECONDS);
         lineChartWeight.getData().add(series);
     }
-
+    //TODO со временем секунды идут не последовательно
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Запускаем потоки producer/consumer ");

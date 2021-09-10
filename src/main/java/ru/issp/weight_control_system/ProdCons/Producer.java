@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Producer implements Runnable {
-    private final BlockingQueue queue;
+    private final BlockingQueue<byte[]> queue;
     private final SerialPort serialPort;
     int weight;
 
@@ -32,16 +32,16 @@ public class Producer implements Runnable {
         }
 
     }
-    Object produce(){
+    byte[] produce(){
         System.out.println("Читаем из COM порта." );
         writeByteToCom();
         return readBytesFromCom();}
 
     private byte[] readBytesFromCom() {
-        byte[] weightData = new byte[16];//очень некрасиво, переделать
+        byte[] weightData = new byte[12];//TODO очень некрасиво, переделать
         try {
 
-                while (serialPort.getInputBufferBytesCount() <16){
+                while (serialPort.getInputBufferBytesCount() <12){
                     Thread.sleep(48);
                 }
 
@@ -57,7 +57,7 @@ public class Producer implements Runnable {
     private void writeByteToCom() {
             char StartMarker = '<';
             char EndMarker = '>';
-            String s = StartMarker+"0000000080"+EndMarker; //это типо команда на старт?
+            String s = StartMarker+"0000000080"+EndMarker; //это типо команда на старт
             for (int i = 0; i < s.length(); i++) {
                 try {
                     Thread.sleep(48);
@@ -70,6 +70,8 @@ public class Producer implements Runnable {
         }
 
     private SerialPort initSerialPort(){
+        //TODO Добавить установку порта через интерфейс
+        //- В будующем переработать на MODBUS
         System.out.println("Listening all com ports available on device");
         //Метод getPortNames() возвращает массив строк. Элементы массива уже отсортированы.
         //Getting all serial port names available on device

@@ -1,2 +1,4 @@
 # Project exclude paths
 /target/
+/src/main/java/ru/issp/weight_control_system/Q&A/
+/.idea/
