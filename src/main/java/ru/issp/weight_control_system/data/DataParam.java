@@ -1,11 +1,15 @@
 package ru.issp.weight_control_system.data;
 
 public class DataParam {
-    //TODO поискать паттерн для констант и переменных
+
+    //FIXME поискать паттерн для констант и переменных
+    // - https://www.baeldung.com/java-constants-good-practices
+    // - https://stackoverflow.com/questions/66066/what-is-the-best-way-to-implement-constants-in-java
     //TODO Добавить возможность установки параметров через интерфейс
 //все значения куазываются в системе си
 
-Double znam;
+
+    Double znam;
 Double part4;
 Double part5;
 

@@ -32,7 +32,7 @@ public class MainController implements Initializable {
     public NumberAxis yAxisLineChartWeight;
 
     final int WINDOW_SIZE = 10;
-
+    //TODO разобраться с generic's
     BlockingQueue<byte[]> q = new LinkedBlockingQueue<byte[]>();
     Producer p = new Producer(q);
     Consumer c1 = new Consumer(q);
