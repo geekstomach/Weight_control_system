@@ -39,7 +39,7 @@ public class MainApplication extends Application {
         try {
             //TODO Find out how to use path from resourcers src/main/resources/Nika/ADC_Demo.exe
             initComByDelhi =   new ProcessBuilder("C:\\Users\\donne\\IdeaProjects\\Weight_control_system\\src\\main\\resources\\Nika\\ADC_Demo.exe").start();
-            Thread.sleep(1000);
+            Thread.sleep(50);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {

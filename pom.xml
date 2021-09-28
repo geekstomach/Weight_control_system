@@ -18,7 +18,7 @@
         <dependency>
             <groupId>io.github.java-native</groupId>
             <artifactId>jssc</artifactId>
-            <version>2.9.3</version>
+            <version>2.9.4</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -48,6 +48,12 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

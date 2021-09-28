@@ -10,9 +10,11 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import ru.issp.weight_control_system.ProdCons.Consumer;
-import ru.issp.weight_control_system.ProdCons.Producer;
+import ru.issp.weight_control_system.ProdCons.FromByteToWeight;
+import ru.issp.weight_control_system.ProdCons.ReadFromCom;
+import ru.issp.weight_control_system.ProdCons.ReadFromFile;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,14 +33,18 @@ public class MainController implements Initializable {
     public CategoryAxis xAxisLineChartWeight;
     public NumberAxis yAxisLineChartWeight;
 
-    final int WINDOW_SIZE = 10;
+    final int WINDOW_SIZE = 100;
     //TODO разобраться с generic's
-    BlockingQueue<byte[]> q = new LinkedBlockingQueue<byte[]>();
-    Producer p = new Producer(q);
-    Consumer c1 = new Consumer(q);
+    BlockingQueue<byte[]> q = new LinkedBlockingQueue<>();
+    ReadFromFile p = new ReadFromFile(q);
+    FromByteToWeight c1 = new FromByteToWeight(q);
 
 
     private ScheduledExecutorService scheduledExecutorService;
+
+    public MainController() throws FileNotFoundException {
+    }
+
     public ScheduledExecutorService getScheduledExecutorService() {
         return scheduledExecutorService;
     }
@@ -73,11 +79,11 @@ public class MainController implements Initializable {
 
     public void addDataToChart(){
         //defining a series to display data
-        XYChart.Series<String,Number> series = new XYChart.Series<String,Number>();
+        XYChart.Series<String,Number> series = new XYChart.Series<>();
         series.setName("weight(t)");
 
         // this is used to display time in HH:mm:ss format
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSSSSS");
 
         // setup a scheduled executor to periodically put data into the chart
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -103,10 +109,9 @@ public class MainController implements Initializable {
             } catch (Throwable e) {
                 e.printStackTrace();
                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE,"Caught exception in ScheduledExecutorService.",e);
-            }}, 0, 1000, TimeUnit.MILLISECONDS);
+            }}, 0, 100, TimeUnit.MILLISECONDS);
         lineChartWeight.getData().add(series);
     }
-    //TODO со временем секунды идут не последовательно
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Запускаем потоки producer/consumer ");

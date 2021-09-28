@@ -32,7 +32,7 @@
              <CategoryAxis fx:id="xAxisLineChartWeight" label="Время" side="BOTTOM" animated="false" />
          </xAxis>
          <yAxis>
-             <NumberAxis  fx:id="yAxisLineChartWeight" label="Вес, г" side="LEFT" animated="false" />
+             <NumberAxis  fx:id="yAxisLineChartWeight" label="Вес, мг" side="LEFT" animated="false" />
          </yAxis>
      </LineChart>
  </VBox>
