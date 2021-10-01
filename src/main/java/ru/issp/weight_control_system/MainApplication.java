@@ -2,11 +2,12 @@ package ru.issp.weight_control_system;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import ru.issp.weight_control_system.utils.Singleton;
+
 
 import java.io.IOException;
 
@@ -24,12 +25,14 @@ public class MainApplication extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
+        Singleton.getInstance().closePort();
         Platform.exit();
         System.exit(0);
     }
 
     public static void main(String[] args) {
-      executeNika();//т.к. не удалось решить проблемы инициализации параметров COM порта,запускаем старую программу для настройки параметров соединения.
+        //TODO возможно стоит перенести запуск старой программы в класс Serial port Singleton
+        executeNika();//Т.к. не удалось решить проблемы инициализации параметров COM порта, запускаем старую программу для настройки параметров соединения.
         launch();
     }
 
@@ -37,8 +40,8 @@ public class MainApplication extends Application {
    static void executeNika(){
         Process initComByDelhi = null;
         try {
-            //TODO Find out how to use path from resourcers src/main/resources/Nika/ADC_Demo.exe
-            initComByDelhi =   new ProcessBuilder("C:\\Users\\donne\\IdeaProjects\\Weight_control_system\\src\\main\\resources\\Nika\\ADC_Demo.exe").start();
+            //TODO Find out how to use path from resources src/main/resources/Nika/ADC_Demo.exe
+            initComByDelhi =   new ProcessBuilder("src/main/resources/Nika/ADC_Demo.exe").start();
             Thread.sleep(50);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

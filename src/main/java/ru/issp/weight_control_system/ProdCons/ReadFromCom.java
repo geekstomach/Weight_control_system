@@ -3,25 +3,34 @@ package ru.issp.weight_control_system.ProdCons;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import ru.issp.weight_control_system.utils.Singleton;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ReadFromCom implements Runnable {
+    //FIXME Выделить  SerialPort в отдельный клас Singletone
+    // - чтобы была возможность в него записывать данные по управлению мощностью
+    // - проверить какие данные я получаю с датчика веса( и отображение их на графике)
+
     private final BlockingQueue<byte[]> queueFromCom;
-    private final SerialPort serialPort;
+    //public  SerialPort serialPort;
+
     int weight;
 
     public ReadFromCom(BlockingQueue<byte[]> q){
         queueFromCom = q;
-        this.serialPort = initSerialPort();
+        //this.serialPort = initSerialPort();
   weight = 0;
     }
 
     @Override
     public void run() {
         try {
+
             while (true){
                 queueFromCom.put(produce());
             }
@@ -33,7 +42,7 @@ public class ReadFromCom implements Runnable {
 
     }
     byte[] produce(){
-        System.out.println("Читаем из COM порта." );
+        System.out.println("Читаем из COM порта.");
         writeByteToCom();
         return readBytesFromCom();}
 
@@ -41,16 +50,19 @@ public class ReadFromCom implements Runnable {
         byte[] rawData = new byte[12];//TODO очень некрасиво, переделать
         try {
 
-                while (serialPort.getInputBufferBytesCount() <12){
+                //while (serialPort.getInputBufferBytesCount() <12){
+                while (Singleton.getInstance().getInputBufferBytesCount() <12){
                     Thread.sleep(48);
                 }
 
-                byte[] readBuffer = new byte[serialPort.getInputBufferBytesCount()];
-                readBuffer = serialPort.readBytes(readBuffer.length);
+                ///byte[] readBuffer = new byte[serialPort.getInputBufferBytesCount()];
+                byte[] readBuffer = new byte[Singleton.getInstance().getInputBufferBytesCount()];
+                //readBuffer = serialPort.readBytes(readBuffer.length);
+                readBuffer = Singleton.getInstance().readBytes(readBuffer.length);
                 rawData = readBuffer;
 
         } catch (Exception e) { e.printStackTrace(); }
-
+        System.out.println(Arrays.toString(rawData));
 
         return  rawData;}
 
@@ -61,17 +73,19 @@ public class ReadFromCom implements Runnable {
             for (int i = 0; i < s.length(); i++) {
                 try {
                     Thread.sleep(48);
-                    serialPort.writeByte(s.getBytes()[i]);
+                    //serialPort.writeByte(s.getBytes()[i]);
+                    Singleton.getInstance().writeByte(s.getBytes()[i]);
                 } catch (SerialPortException | InterruptedException e) {
                     System.err.println(e);
                     e.printStackTrace();
                 }
             }
+
         }
 
-    private SerialPort initSerialPort(){
+    /*private SerialPort initSerialPort(){
         //TODO Добавить установку порта через интерфейс
-        //- В будующем переработать на MODBUS
+        // - В будущем переработать на MODBUS
         System.out.println("Listening all com ports available on device");
         //Метод getPortNames() возвращает массив строк. Элементы массива уже отсортированы.
         //Getting all serial port names available on device
@@ -89,7 +103,7 @@ public class ReadFromCom implements Runnable {
         } catch (SerialPortException e) {
             e.printStackTrace();
         }
-    return serialPort;}
+    return serialPort;}*/
 
 
 

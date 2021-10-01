@@ -10,6 +10,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import jssc.SerialPortException;
 import ru.issp.weight_control_system.ProdCons.FromByteToWeight;
 import ru.issp.weight_control_system.ProdCons.ReadFromCom;
 import ru.issp.weight_control_system.ProdCons.ReadFromFile;
@@ -34,10 +35,15 @@ public class MainController implements Initializable {
     public NumberAxis yAxisLineChartWeight;
 
     final int WINDOW_SIZE = 100;
-    //TODO разобраться с generic's
+    //TODO Сделать оди для всех графиков SimpleDateFormat и метод отрисовки
+    // - разобраться с синхронизацией времени(чтобы на графике отображались актуальные данные)
+    // - сделать дополнительное окно для ввода параметров
+    // - добавить возможность и кнопки управления мощностью
     BlockingQueue<byte[]> q = new LinkedBlockingQueue<>();
-    ReadFromFile p = new ReadFromFile(q);
+    //ReadFromFile p = new ReadFromFile(q);//Читаем из файла
+    ReadFromCom p = new ReadFromCom(q);//Читаем из COM-порта
     FromByteToWeight c1 = new FromByteToWeight(q);
+
 
 
     private ScheduledExecutorService scheduledExecutorService;
@@ -66,7 +72,7 @@ public class MainController implements Initializable {
         addDataToChart();
     }
 
-    public void StopButtonClicked(ActionEvent actionEvent) {
+    public void StopButtonClicked(ActionEvent actionEvent) throws SerialPortException {
         System.out.println("Stop");
 
         textArea.appendText(Stop.getText()+ System.lineSeparator());
@@ -74,6 +80,8 @@ public class MainController implements Initializable {
 
         //Останавливаем отображение
         scheduledExecutorService.shutdown();
+        //TODO организовать закрытие порта при нажатии на закрытие программы
+        //p.serialPort.closePort();
     }
     //обеспечиваем связность контроллера с главным классом
 
@@ -83,7 +91,7 @@ public class MainController implements Initializable {
         series.setName("weight(t)");
 
         // this is used to display time in HH:mm:ss format
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSSSSS");
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.S");
 
         // setup a scheduled executor to periodically put data into the chart
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();

@@ -39,13 +39,12 @@ public class ReadFromFile implements Runnable {
 
     private byte[] produce() throws IOException, InterruptedException {
         byte[] rawData = new byte[12];
-       // while (reader.available() > 0) {
+
             byte temp = reader.readByte();
 
             if (temp == '<') {
                 for (int i = 0; i < 12; i++) {
                     rawData[i] = reader.readByte();
-                    System.out.print((char) rawData[i]);
                 }
             }
         System.out.println();
@@ -58,10 +57,6 @@ public class ReadFromFile implements Runnable {
             } else {
                 System.out.println("Пропускаем байт " + temp);
             }
-
-
-
-     //   }
 
         return rawData;
 
