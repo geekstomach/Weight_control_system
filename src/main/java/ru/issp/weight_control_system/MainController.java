@@ -34,7 +34,7 @@ public class MainController implements Initializable {
     public CategoryAxis xAxisLineChartWeight;
     public NumberAxis yAxisLineChartWeight;
 
-    final int WINDOW_SIZE = 100;
+    final int WINDOW_SIZE = 20;
     //TODO Сделать оди для всех графиков SimpleDateFormat и метод отрисовки
     // - разобраться с синхронизацией времени(чтобы на графике отображались актуальные данные)
     // - сделать дополнительное окно для ввода параметров
@@ -117,7 +117,7 @@ public class MainController implements Initializable {
             } catch (Throwable e) {
                 e.printStackTrace();
                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE,"Caught exception in ScheduledExecutorService.",e);
-            }}, 0, 100, TimeUnit.MILLISECONDS);
+            }}, 0, 1000, TimeUnit.MILLISECONDS);
         lineChartWeight.getData().add(series);
     }
     @Override
