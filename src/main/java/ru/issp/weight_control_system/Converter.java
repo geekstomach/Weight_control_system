@@ -14,21 +14,21 @@ public class Converter {
         System.out.println(Long.parseLong(data, 16));
     }
 
-    public static void main1(String[] args) {
+    public static void main(String[] args) {
         byte[] data = new byte[12];
 
-        String rawData = "000003A9DE1B";
+        String rawData = "00003DB6F62B";
 
         for (int i = 0; i < rawData.length(); i++) {
             data[i] = (byte) rawData.charAt(i);
 //            data[i] = (byte) Integer.parseInt(String.valueOf(rawData.charAt(i)), 16);
         }
 
-        System.out.println(4043655);
+        System.out.println(4044534);
         System.out.println(getLongFromBytes(data));
     }
 
-    public static void main(String[] args) {
+    public static void main2(String[] args) {
 
         System.out.println("DEC to char : " + (char) 53);//DEC to char
         System.out.println("DEC to HEX : " + Integer.toHexString(53)); //DEC to HEX

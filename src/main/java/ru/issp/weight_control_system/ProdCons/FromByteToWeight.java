@@ -23,10 +23,12 @@ public class FromByteToWeight implements Runnable{
     private final LinkedBlockingQueue<Long> outputQueue;
 
     //TODO добавить возможность калибровки датчика веса (может отдельной подпрограммой)
-    //double k = 0.23;
-    //long zeroValue = 4044534;
-    double k = 3.08;
-    long zeroValue = 249557;
+    //Используем если читаем из файла
+    double k = 0.23;
+    long zeroValue = 4044534;
+    //Используем если читаем из COM
+    /*double k = 3.08;
+    long zeroValue = 249557;*/
 
     public FromByteToWeight(BlockingQueue<byte[]>  q){
         inputQueue = q;
@@ -39,7 +41,7 @@ public class FromByteToWeight implements Runnable{
 
         try{
 
-/*            //TODO разобраться откуда  20000000 при старте
+/*            //TODO разобраться откуда  20000000 при старте(вроде пропало при Singleton)
             Thread.sleep(48);
             zeroValue = getLongFromBytes(inputQueue.take());
             if (zeroValue == 20000000)zeroValue = getLongFromBytes(inputQueue.take());*/
@@ -56,6 +58,7 @@ public class FromByteToWeight implements Runnable{
         }
     }
     void consume(byte[] x) {
+        System.out.println(getLongFromBytes(x));
         System.out.printf("[%s] Потреблено  : %s %n", Thread .currentThread().getName(),getWeightDataLong2(x)*k);
 
         try {

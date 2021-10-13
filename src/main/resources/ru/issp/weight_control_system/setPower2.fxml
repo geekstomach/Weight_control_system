@@ -1,0 +1,30 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<AnchorPane fx:controller="ru.issp.weight_control_system.SetPowerController"
+            xmlns:fx="http://javafx.com/fxml" >
+ <VBox spacing="10" alignment="TOP_CENTER">
+    <Label  alignment="TOP_CENTER" text="This is a simple demo application for get weight." style="-fx-font-size: 24px;"/>
+     <padding>
+         <Insets top="10" bottom="10" left="20" right="10"/>
+     </padding>
+    <HBox spacing="10" >
+        <padding>
+            <Insets top="10" bottom="10" left="10" right="10"/>
+        </padding>
+
+        <Button fx:id="SetPower" text="Get one sample" onAction="#SetPowerButtonClicked"/>
+        <Button fx:id="toChart" text="toChart" onAction="#switchSceneButtonClicked"/>
+    </HBox>
+
+<TextField fx:id="setPowerArea" accessibleText="Введите значение от 0 до 10000" >
+
+</TextField>
+<TextArea  fx:id="textArea" wrapText="true" >
+
+</TextArea>
+
+ </VBox>
+</AnchorPane>

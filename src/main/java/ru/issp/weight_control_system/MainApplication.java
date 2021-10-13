@@ -12,11 +12,11 @@ import ru.issp.weight_control_system.utils.Singleton;
 import java.io.IOException;
 
 public class MainApplication extends Application {
-    //TODO Добавить возможность управления мощностью!!!
+    //TODO Научиться писать правильные Javadoc
     @Override
     public void start(Stage stage) throws IOException {
-        //FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("getWeight.fxml"));
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("setPower.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("getWeight.fxml"));
+        //FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("setPower.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 650, 750);
         stage.setTitle("Get Weight");
         stage.setScene(scene);

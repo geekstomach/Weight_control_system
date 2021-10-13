@@ -3,10 +3,17 @@ package ru.issp.weight_control_system.utils;
 import jssc.SerialPortException;
 //Мощность посылается раз в 3 секунды без автомата
 //Мощность с автоматом посылается раз в 8*3=24 секунды
-public class PowerSetter {
+public final class PowerSetter {
 
 
-    public static int POWER = 0;
+    private static int POWER = 0;
+    /**
+     * Class constructor.
+     */
+    public PowerSetter() {
+        throw new java.lang.UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+    //TODO управление мощностью идет раз в 3 секунды
 
     public static void setPower(int power) throws SerialPortException, InterruptedException {
         // Посылает на генератор задание мощности (0..10000) <=> 0..100% мощности
@@ -30,7 +37,11 @@ public class PowerSetter {
 
         }
 Singleton.getInstance().writeString(hexString.toString());
+POWER = power;
+    }
 
+    public static int getPOWER() {
+        return POWER;
     }
 //https://delphisources.ru/pages/faq/faq_delphi_basics/Ord.php.html
     //TODO добавить возможность разогрева и охлаждения за определенное время
