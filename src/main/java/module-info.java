@@ -2,6 +2,8 @@ module ru.issp.weight_control_system {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires jssc;
+    requires java.logging;
 
 
     opens ru.issp.weight_control_system to javafx.fxml;

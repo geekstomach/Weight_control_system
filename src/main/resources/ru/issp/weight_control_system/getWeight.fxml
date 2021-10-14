@@ -1,0 +1,56 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<AnchorPane fx:controller="ru.issp.weight_control_system.MainController"
+            xmlns:fx="http://javafx.com/fxml" >
+ <VBox spacing="10" alignment="TOP_CENTER">
+    <Label  alignment="TOP_CENTER" text="This is a simple demo application for get weight." style="-fx-font-size: 24px;"/>
+     <padding>
+         <Insets top="10" bottom="10" left="20" right="10"/>
+     </padding>
+    <HBox spacing="10" alignment="TOP_LEFT">
+        <padding>
+            <Insets top="10" bottom="10" left="10" right="10"/>
+        </padding>
+
+        <Button fx:id="OneSample" text="Get one sample" onAction="#OneSampleButtonClicked"/>
+        <Button fx:id="Start" text="Start" onAction="#StartButtonClicked"/>
+        <Button fx:id="Stop" text="Stop" onAction="#StopButtonClicked"/>
+        <Button fx:id="toChart" text="toChart" onAction="#switchSceneButtonClicked"/>
+    </HBox>
+
+
+<TextArea  fx:id="textArea" wrapText="true" >
+
+</TextArea>
+     <GridPane>
+         <children>
+             <LineChart fx:id="lineChartWeight" xAxis="xAxisLineChartWeight" yAxis="yAxisLineChartWeight" title="Weight" layoutX="50.0" layoutY="65.0" animated="false" >
+                 <xAxis>
+                     <CategoryAxis fx:id="xAxisLineChartWeight" label="Время" side="BOTTOM" animated="false" />
+                 </xAxis>
+                 <yAxis>
+                     <NumberAxis  fx:id="yAxisLineChartWeight" label="Вес, мг" side="LEFT" animated="false" />
+                 </yAxis>
+             </LineChart>
+         </children>
+<children>
+    <LineChart fx:id="lineChartWeight2" xAxis="xAxisLineChartWeight" yAxis="yAxisLineChartWeight" title="Weight" layoutX="50.0" layoutY="65.0" animated="false" >
+        <xAxis>
+            <CategoryAxis fx:id="xAxisLineChartWeight2" label="Время" side="BOTTOM" animated="false" />
+        </xAxis>
+        <yAxis>
+            <NumberAxis  fx:id="yAxisLineChartWeight2" label="Вес, мг" side="LEFT" animated="false" />
+        </yAxis>
+    </LineChart>
+</children>
+
+     </GridPane>
+ </VBox>
+</AnchorPane>

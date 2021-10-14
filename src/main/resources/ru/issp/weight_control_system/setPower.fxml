@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.TextArea?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16" fx:controller="ru.issp.weight_control_system.SetPowerController">
+ <VBox alignment="TOP_CENTER" spacing="10">
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24px;" text="This is a simple demo application for setPower." />
+    <HBox alignment="TOP_LEFT" spacing="10">
+        <padding>
+            <Insets bottom="10" left="10" right="10" top="10" />
+        </padding>
+        <Button fx:id="setPower" onAction="#SetPowerButtonClicked" text="setPower" />
+         <TextField fx:id="setPowerArea" prefHeight="26.0" prefWidth="195.0" promptText="Введите значение от 0 до 10000" />
+         <Label fx:id="currentPowerLabel" prefHeight="18.0" prefWidth="253.0" />
+    </HBox>
+      <HBox alignment="TOP_LEFT" spacing="10">
+         <padding>
+            <Insets bottom="10" left="10" right="10" top="10" />
+         </padding>
+         <children>
+            <Button fx:id="startCooling" onAction="#StartCoolingButtonClicked" text="start Cooling" />
+            <TextField fx:id="setCoolingTimeArea" prefHeight="26.0" prefWidth="234.0" promptText="Введите время охлаждения в минутах" />
+            <ProgressBar prefWidth="200.0" progress="0.0" />
+         </children>
+      </HBox>
+     <HBox alignment="TOP_LEFT" spacing="10">
+         <padding>
+             <Insets bottom="10" left="10" right="10" top="10" />
+         </padding>
+         <children>
+             <Button fx:id="stopCooling" onAction="#StopCoolingButtonClicked" text="stop Cooling" />
+         </children>
+     </HBox>
+     <padding>
+         <Insets bottom="10" left="20" right="10" top="10" />
+     </padding>
+     <TextArea fx:id="textArea" wrapText="true"  >
+
+     </TextArea>
+ </VBox>
+
+  <Button fx:id="toChart" layoutX="534.0" layoutY="373.0" onAction="#switchSceneButtonClicked" prefHeight="26.0" prefWidth="65.0" text="toChart" />
+</AnchorPane>
