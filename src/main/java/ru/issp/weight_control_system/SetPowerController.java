@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -36,6 +37,8 @@ public class SetPowerController implements Initializable {
     public TextField setCoolingTimeArea;
     public Label currentPowerLabel;
 
+    private Scene getWeightScene;
+
     boolean cooling;
     int timePeriod = 3;
 
@@ -51,36 +54,24 @@ public class SetPowerController implements Initializable {
     int power = Integer.parseInt(setPowerArea.getText());
      if ((power>=0)&&(power<=10000)){
          PowerSetter.setPower(power);
-         textArea.appendText("Значение мощности изменилось на " + String.valueOf(power));
+         textArea.appendText("Значение мощности изменилось на " + String.valueOf(power) +"\n");
          currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
 }else {
          PowerSetter.setPower(PowerSetter.getPOWER());
-         textArea.appendText("ВВеденные значения находятся вне допустимых границ");
+         textArea.appendText("ВВеденные значения находятся вне допустимых границ" +"\n");
 
-         textArea.appendText("Значение мощности Осталось прежним" + String.valueOf(power));
+         textArea.appendText("Значение мощности Осталось прежним" + String.valueOf(power) +"\n");
 
 
      }
 currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
 }catch (NumberFormatException ex) {
-            textArea.appendText("ВВедите цифровое значение.");
+            textArea.appendText("ВВедите цифровое значение." +"\n");
 
             //System.out.println("NumberFormatException");
 }
 
 
-    }
-
-    public void switchSceneButtonClicked(ActionEvent actionEvent) throws IOException {
-        Stage stage;
-        Parent root;
-
-            stage = (Stage) toChart.getScene().getWindow();
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("getWeight.fxml")));
-
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
     }
 
     public void StartCoolingButtonClicked(ActionEvent actionEvent) {
@@ -132,5 +123,14 @@ currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cooling = false;
         currentPowerLabel.setText("0");
+    }
+
+    public void setGetWeightScene(Scene scene) {
+        getWeightScene = scene;
+    }
+    public void switchSceneButtonClicked(ActionEvent actionEvent) throws IOException {
+        Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        primaryStage.setScene(getWeightScene);
+
     }
 }

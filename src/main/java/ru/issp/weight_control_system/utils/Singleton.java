@@ -68,7 +68,8 @@ public class Singleton {
         System.out.println("We work with " + portNames[0]);
 
         //В конструктор класса передаём имя порта с которым мы будем работать
-        SerialPort serialPort = new SerialPort(portNames[0]);
+        //SerialPort serialPort = new SerialPort(portNames[0]);
+        SerialPort serialPort = new SerialPort("COM6");
         try {
 
             serialPort.openPort();

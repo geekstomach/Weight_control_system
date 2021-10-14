@@ -83,9 +83,9 @@ public class FromByteToWeight implements Runnable{
 
         for (int i = 2; i < 10; i++) {
             hexString.append((char)rawData[i]);
-            System.out.print((char)rawData[i]);
+            //System.out.print((char)rawData[i]);
         }
-        System.out.println(" Почему-то");
+
         return Long.parseLong(hexString.toString(), 16);
     }
 

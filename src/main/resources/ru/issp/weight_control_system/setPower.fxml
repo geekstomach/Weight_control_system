@@ -45,7 +45,7 @@
      <padding>
          <Insets bottom="10" left="20" right="10" top="10" />
      </padding>
-     <TextArea fx:id="textArea" wrapText="true" >
+     <TextArea fx:id="textArea" wrapText="true"  >
 
      </TextArea>
  </VBox>

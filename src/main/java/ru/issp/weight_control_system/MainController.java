@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
@@ -39,6 +40,8 @@ public class MainController implements Initializable {
     public LineChart<String,Number> lineChartWeight;
     public CategoryAxis xAxisLineChartWeight;
     public NumberAxis yAxisLineChartWeight;
+
+    private Scene setPowerScene;
 
     final int WINDOW_SIZE = 20;
     public Button toChart;
@@ -135,24 +138,30 @@ public class MainController implements Initializable {
         new Thread(p).start();
         new Thread(c1).start();
 lineChartWeight2.setVisible(false);
+
+
     }
 //TODO Как добиться того что при смене сцены оставался отрисовываться график?
 // Видимо надо делать его в отдельном Pane и скрывать или показывать
 
     public void switchSceneButtonClicked(ActionEvent actionEvent) throws IOException {
+        Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        primaryStage.setScene(setPowerScene);
+    }
+
+    public void switchSceneButtonClicked2(ActionEvent actionEvent) throws IOException {
         Stage stage;
         Parent root;
 
         stage = (Stage) toChart.getScene().getWindow();
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("setPower.fxml")));
 
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+
+toChart.getScene().setRoot(root);
+
     }
-
     public void switchSceneButtonClicked1(ActionEvent actionEvent) throws IOException {
-
+//так можно скрывать графики на gridpane
         if (lineChartWeight.isVisible()){
             lineChartWeight.setVisible(false);
             lineChartWeight2.setVisible(true);
@@ -161,5 +170,9 @@ lineChartWeight2.setVisible(false);
             lineChartWeight2.setVisible(false);
         }
 
+    }
+
+    public void setSetPowerSceneScene(Scene scene) {
+setPowerScene = scene;
     }
 }
