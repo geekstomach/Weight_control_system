@@ -5,9 +5,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DataObject {
-//Макет реализации ПИД-контроллера
-// http://frcsimulator.sourceforge.net/javadoc/0.1a-lovelace/edu/wpi/first/wpilibj/PIDController.htm
-    //немного про фильтрацию. https://alexgyver.ru/lessons/filters/
+
     DataParam dataParam;
     private final int dataPoints = 8;
     private final int properTime =3;
@@ -47,9 +45,9 @@ public class DataObject {
         double denominator;
         double numerator1;
         double numerator2;
-        denominator = Math.pow(dataParam.getR_cruc(),2)-dataParam.getS_die()/dataParam.getPi();
-        numerator1 = dataParam.getRol()*Math.pow(dataParam.getR(),2)*(dataParam.getPi()*Math.pow(dataParam.getR_cruc(),2)-(dataParam.getS_die()-dataParam.getS_die_cr()))*dataParam.getV_upper();
-        numerator2 = dataParam.getPi()*dataParam.getRol()*dataParam.getS_die_cr()*Math.pow(dataParam.getR_cruc(),2)*dataParam.getV_lower();
+        denominator = Math.pow(dataParam.getR_cruc(),2)-dataParam.getS_die()/Math.PI;
+        numerator1 = dataParam.getRol()*Math.pow(dataParam.getR(),2)*(Math.PI*Math.pow(dataParam.getR_cruc(),2)-(dataParam.getS_die()-dataParam.getS_die_cr()))*dataParam.getV_upper();
+        numerator2 = Math.PI*dataParam.getRol()*dataParam.getS_die_cr()*Math.pow(dataParam.getR_cruc(),2)*dataParam.getV_lower();
         double firstDerivativeModelWeight = (numerator1-numerator2)/denominator;
     return previousModelWeight+firstDerivativeModelWeight*dataPoints*properTime;}
 

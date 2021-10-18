@@ -8,4 +8,6 @@ module ru.issp.weight_control_system {
 
     opens ru.issp.weight_control_system to javafx.fxml;
     exports ru.issp.weight_control_system;
+    opens ru.issp.weight_control_system.Model to javafx.fxml;
+    exports ru.issp.weight_control_system.Model;
 }

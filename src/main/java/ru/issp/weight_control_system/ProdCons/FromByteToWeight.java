@@ -50,6 +50,7 @@ public class FromByteToWeight implements Runnable{
             while(true) {
 
                 consume(inputQueue.take());
+
             }
         }catch (InterruptedException ex){
             //обрабатываем исключение

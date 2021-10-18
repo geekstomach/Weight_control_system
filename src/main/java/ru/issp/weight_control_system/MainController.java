@@ -2,6 +2,9 @@ package ru.issp.weight_control_system;
 
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
+import ru.issp.weight_control_system.Model.ModelProperty;
 import ru.issp.weight_control_system.ProdCons.FromByteToWeight;
 import ru.issp.weight_control_system.ProdCons.ReadFromCom;
 import ru.issp.weight_control_system.ProdCons.ReadFromFile;
@@ -27,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,11 +45,14 @@ public class MainController implements Initializable {
     public LineChart<String,Number> lineChartWeight;
     public CategoryAxis xAxisLineChartWeight;
     public NumberAxis yAxisLineChartWeight;
+    public Button toTable;
+    public Button toSetPower;
 
     private Scene setPowerScene;
-
+    private Scene setTableScene;
+    
     final int WINDOW_SIZE = 20;
-    public Button toChart;
+    private ObservableList<ModelProperty> list = FXCollections.observableArrayList();
     public LineChart lineChartWeight2;
     //TODO Сделать оди для всех графиков SimpleDateFormat и метод отрисовки
     // - разобраться с синхронизацией времени(чтобы на графике отображались актуальные данные)
@@ -100,9 +108,9 @@ public class MainController implements Initializable {
         //defining a series to display data
         XYChart.Series<String,Number> series = new XYChart.Series<>();
         series.setName("weight(t)");
+        long start = System.currentTimeMillis();
 
         // this is used to display time in HH:mm:ss format
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.S");
 
         // setup a scheduled executor to periodically put data into the chart
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -111,16 +119,13 @@ public class MainController implements Initializable {
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             // get a random integer between 0-10
             try {
-                Long weight = c1.getOutputQueue().take();
-
-
+                //Long weight = c1.getOutputQueue().take();
+                double weight = list.get(list.size()-1).getRealMass();
+                System.out.println("В листе столько-то значений " + list.size());
             // Update the chart
             Platform.runLater(() -> {
-                // get current time
-                Date now = new Date();
-                // put random number with current time
-                series.getData().add(
-                        new XYChart.Data<>(simpleDateFormat.format(now), weight));
+                        series.getData().add(
+                        new XYChart.Data<>(createDateFormat().format(System.currentTimeMillis() - start), weight));
 
                 if (series.getData().size() > WINDOW_SIZE)
                     series.getData().remove(0);
@@ -135,31 +140,35 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Запускаем потоки producer/consumer ");
-        new Thread(p).start();
-        new Thread(c1).start();
-lineChartWeight2.setVisible(false);
+/*        new Thread(p).start();
+        new Thread(c1).start();*/
+        addDataToChart();
+        lineChartWeight2.setVisible(false);
 
 
+    }
+    public void setDataList(ObservableList<ModelProperty> list) {
+        this.list = list;
     }
 //TODO Как добиться того что при смене сцены оставался отрисовываться график?
 // Видимо надо делать его в отдельном Pane и скрывать или показывать
 
-    public void switchSceneButtonClicked(ActionEvent actionEvent) throws IOException {
+    public void switchToSetPowerSceneButtonClicked(ActionEvent actionEvent) throws IOException {
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         primaryStage.setScene(setPowerScene);
     }
-
-    public void switchSceneButtonClicked2(ActionEvent actionEvent) throws IOException {
-        Stage stage;
-        Parent root;
-
-        stage = (Stage) toChart.getScene().getWindow();
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("setPower.fxml")));
-
-
-toChart.getScene().setRoot(root);
-
+    public void switchToTableSceneButtonClicked(ActionEvent actionEvent) throws IOException {
+        Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        primaryStage.setScene(setTableScene);
     }
+
+    public void setSetPowerSceneScene(Scene scene) {
+setPowerScene = scene;
+    }
+    public void setTableScene(Scene scene) {
+        setTableScene = scene;
+    }
+    
     public void switchSceneButtonClicked1(ActionEvent actionEvent) throws IOException {
 //так можно скрывать графики на gridpane
         if (lineChartWeight.isVisible()){
@@ -171,8 +180,9 @@ toChart.getScene().setRoot(root);
         }
 
     }
-
-    public void setSetPowerSceneScene(Scene scene) {
-setPowerScene = scene;
+    private static SimpleDateFormat createDateFormat() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.S");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat;
     }
 }

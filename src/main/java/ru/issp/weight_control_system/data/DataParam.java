@@ -8,9 +8,9 @@ public class  DataParam {
     //TODO Добавить возможность установки параметров через интерфейс
 //все значения указываются в системе си
 
-    private float  ki, kp, kd;
-    private float dNPmax;
-    private float dNPmin;
+    private double  ki, kp, kd;
+    private double dNPmax;
+    private double dNPmin;
 
 //радиус тигля в мм
     private double R_cruc = 48.000d;
@@ -104,43 +104,43 @@ public class  DataParam {
         this.r = r;
     }
 
-    public float getKi() {
+    public double getKi() {
         return ki;
     }
 
-    public void setKi(float ki) {
+    public void setKi(double ki) {
         this.ki = ki;
     }
 
-    public float getKp() {
+    public double getKp() {
         return kp;
     }
 
-    public void setKp(float kp) {
+    public void setKp(double kp) {
         this.kp = kp;
     }
 
-    public float getKd() {
+    public double getKd() {
         return kd;
     }
 
-    public void setKd(float kd) {
+    public void setKd(double kd) {
         this.kd = kd;
     }
 
-    public float getdNPmax() {
+    public double getdNPmax() {
         return dNPmax;
     }
 
-    public void setdNPmax(float dNPmax) {
+    public void setdNPmax(double dNPmax) {
         this.dNPmax = dNPmax;
     }
 
-    public float getdNPmin() {
+    public double getdNPmin() {
         return dNPmin;
     }
 
-    public void setdNPmin(float dNPmin) {
+    public void setdNPmin(double dNPmin) {
         this.dNPmin = dNPmin;
     }
 }

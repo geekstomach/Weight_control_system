@@ -22,7 +22,8 @@
         <Button fx:id="OneSample" text="Get one sample" onAction="#OneSampleButtonClicked"/>
         <Button fx:id="Start" text="Start" onAction="#StartButtonClicked"/>
         <Button fx:id="Stop" text="Stop" onAction="#StopButtonClicked"/>
-        <Button fx:id="toChart" text="toChart" onAction="#switchSceneButtonClicked"/>
+        <Button fx:id="toSetPower" text="toSetPower" onAction="#switchToSetPowerSceneButtonClicked"/>
+        <Button fx:id="toTable" text="toTable" onAction="#switchToTableSceneButtonClicked"/>
     </HBox>
 
 

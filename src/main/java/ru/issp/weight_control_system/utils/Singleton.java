@@ -47,8 +47,9 @@ public class Singleton {
     public byte[] readBytes(int byteCount) throws SerialPortException {
         return serialPort.readBytes(byteCount);
     }
-    public boolean closePort() throws SerialPortException {
-        return serialPort.closePort();
+    public void closePort() throws SerialPortException {
+        if(serialPort.isOpened())serialPort.closePort();
+        
     }
     //private static SerialPort initSerialPort() {
         private  SerialPort initSerialPort() {

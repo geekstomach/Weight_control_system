@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.Button?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: lightgreen;"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.issp.weight_control_system.TableController">
+
+    <Button fx:id="toChart" layoutX="534.0" layoutY="373.0" onAction="#switchSceneButtonClicked" prefHeight="26.0" prefWidth="65.0" text="toChart" />
+
+
+    <!-- Таблица в которую мы будем выводит наш pojo -->
+    <TableView fx:id="table" layoutX="12.0" layoutY="62.0" prefHeight="324.0" prefWidth="752.0">
+        <columns>
+            <!-- Колонки таблицы -->
+            <TableColumn fx:id="realMass" prefWidth="150.0" text="Вес"  />
+            <TableColumn fx:id="modelMass" prefWidth="150.0" text="Расчетный вес "  />
+            <TableColumn fx:id="modelMassDeviation" prefWidth="150.0" text="Дельта"  />
+            <TableColumn fx:id="modelFirstDerivativeDeviation" prefWidth="150.0" text="Первая производная" />
+            <TableColumn fx:id="modelSecondDerivativeDeviation" prefWidth="150.0" text="Вторая производная" />
+        </columns>
+    </TableView>
+
+</AnchorPane>
