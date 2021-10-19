@@ -40,6 +40,7 @@ public class DataTransfer {
         });*/
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
+            //TODO Возможно стоит посмотреть в сторону кольцевого буфера.
             int size = c1.getOutputQueue().size();
             System.out.println(size);
             double currentMass = 0d;
@@ -51,7 +52,9 @@ public class DataTransfer {
                     sum = sum+c1.getOutputQueue().take();
                     System.out.print(" "+count++);
                 }
-                currentMass = sum/size;
+
+               if (size!=0)currentMass = sum/size;
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -63,18 +66,13 @@ public class DataTransfer {
             //здесь у нас создается два объекта model и ModelProperty.
             Model model = new Model(1, dataParam, dataAll, currentMass);
 
+            list.add(new ModelProperty(
+                    model.realMass,
+                    model.modelMass,
+                    model.modelMassDeviation,
+                    model.modelFirstDerivativeDeviation,
+                    model.modelSecondDerivativeDeviation));
 
-            Platform.runLater(new Runnable() {
-                public void run() {
-                    list.add(new ModelProperty(
-                            model.realMass,
-                            model.modelMass,
-                            model.modelMassDeviation,
-                            model.modelFirstDerivativeDeviation,
-                            model.modelSecondDerivativeDeviation));
-
-                }
-            });
 
 
         }, 0, 1, TimeUnit.SECONDS);

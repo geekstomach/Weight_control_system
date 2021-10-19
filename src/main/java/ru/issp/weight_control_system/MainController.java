@@ -106,7 +106,7 @@ public class MainController implements Initializable {
     //TODO Возможно стоит включить в модель параметр время чтобы не делать scheduledExecutorService в контроллере
     public void addDataToChart() throws InterruptedException {
         //defining a series to display data
-        TimeUnit.MILLISECONDS.sleep(1);
+
         XYChart.Series<String,Number> series = new XYChart.Series<>();
         series.setName("weight(t)");
         long start = System.currentTimeMillis();
@@ -121,12 +121,17 @@ public class MainController implements Initializable {
             // get a random integer between 0-10
             try {
                 //Long weight = c1.getOutputQueue().take();
-                double weight = list.get(list.size()-1).getRealMass();
+
+                //TODO разобраться с инициализацией чтоб эксепшэнов небыло
+                double weight = 0;
+                if (list.size()!=0)weight = list.get(list.size()-1).getRealMass();
+                double finalWeight = weight;
+
                 System.out.println("В листе столько-то значений " + list.size());
             // Update the chart
-            Platform.runLater(() -> {
+                Platform.runLater(() -> {
                         series.getData().add(
-                        new XYChart.Data<>(createDateFormat().format(System.currentTimeMillis() - start), weight));
+                        new XYChart.Data<>(createDateFormat().format(System.currentTimeMillis() - start), finalWeight));
 
                 if (series.getData().size() > WINDOW_SIZE)
                     series.getData().remove(0);
@@ -134,11 +139,28 @@ public class MainController implements Initializable {
             } catch (Throwable e) {
                 e.printStackTrace();
                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE,"Caught exception in ScheduledExecutorService.",e);
-            }}, 0, 1000, TimeUnit.MILLISECONDS);
+            }}, 1, 1000, TimeUnit.MILLISECONDS);
         lineChartWeight.getData().add(series);
 
     }
+    public void addDataToChart2() throws InterruptedException {
+        TimeUnit.MILLISECONDS.sleep(5);
+        XYChart.Series<String,Number> series = new XYChart.Series<>();
+        series.setName("weight(t)");
+        long start = System.currentTimeMillis();
+        Platform.runLater(() -> {
+            while (true) {
+                double weight = list.get(list.size() - 1).getRealMass();
+                System.out.println("В листе столько-то значений " + list.size());
 
+                series.getData().add(
+                        new XYChart.Data<>(createDateFormat().format(System.currentTimeMillis() - start), weight));
+
+                if (series.getData().size() > WINDOW_SIZE)
+                    series.getData().remove(0);
+            }
+        });
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Запускаем потоки producer/consumer ");
@@ -146,10 +168,15 @@ public class MainController implements Initializable {
 
 
     }
-    public void setDataList(ObservableList<ModelProperty> list) throws InterruptedException {
-        this.list = list;
-addDataToChart();
-
+    public void setDataList(ObservableList<ModelProperty> generalList) throws InterruptedException {
+        list = generalList;
+        addDataToChart();
+        list.addListener(new ListChangeListener<ModelProperty>() {
+    @Override
+    public void onChanged(Change<? extends ModelProperty> change) {
+        while (change.next()) if (change.wasUpdated()) System.out.println("График обновился");
+    }
+});
     }
 //TODO Как добиться того что при смене сцены оставался отрисовываться график?
 // Видимо надо делать его в отдельном Pane и скрывать или показывать
