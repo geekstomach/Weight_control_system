@@ -71,10 +71,10 @@ public class DataTransfer {
         }, 0, 1, TimeUnit.SECONDS);
 
     }
-
     private static SimpleDateFormat createDateFormat() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.S");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat;
     }
+
 }

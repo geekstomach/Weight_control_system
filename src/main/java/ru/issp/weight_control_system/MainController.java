@@ -142,7 +142,7 @@ public class MainController implements Initializable {
         System.out.println("Запускаем потоки producer/consumer ");
 /*        new Thread(p).start();
         new Thread(c1).start();*/
-        addDataToChart();
+
         lineChartWeight2.setVisible(false);
 
 

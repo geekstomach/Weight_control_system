@@ -9,14 +9,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import ru.issp.weight_control_system.Model.Model;
 import ru.issp.weight_control_system.Model.ModelProperty;
+import ru.issp.weight_control_system.ProdCons.FromByteToWeight;
+import ru.issp.weight_control_system.ProdCons.ReadFromFile;
+import ru.issp.weight_control_system.data.DataAll;
+import ru.issp.weight_control_system.data.DataParam;
 import ru.issp.weight_control_system.utils.Singleton;
 
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
+import java.util.TimeZone;
+import java.util.concurrent.*;
 
 public class MainApplication extends Application {
+    ObservableList<ModelProperty> sourceList = FXCollections.observableArrayList();;
     //TODO Научиться писать правильные Javadoc
     @Override
     public void start(Stage stage) throws IOException {
@@ -55,10 +65,10 @@ public class MainApplication extends Application {
         stage.setScene(getWeightScene);
         stage.show();
 
-        ObservableList<ModelProperty> list = FXCollections.observableArrayList();
-        DataTransfer.transferData(list);
-        tableController.setDataList(list);
-        getWeightController.setDataList(list);
+
+        DataTransfer.transferData(sourceList);
+        tableController.setDataList(sourceList);
+        getWeightController.setDataList(sourceList);
         }
 
     @Override
@@ -73,5 +83,6 @@ public class MainApplication extends Application {
     public static void main(String[] args) {
    launch();
     }
+
 
 }
