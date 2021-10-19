@@ -1,5 +1,6 @@
 package ru.issp.weight_control_system;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import ru.issp.weight_control_system.Model.Model;
 import ru.issp.weight_control_system.Model.ModelProperty;
@@ -31,43 +32,51 @@ public class DataTransfer {
         new Thread(c1).start();
 
         long start = System.currentTimeMillis();
-
-
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
+/*
+        Platform.runLater(new Runnable() {
             public void run() {
-                int size = c1.getOutputQueue().size();
-                System.out.println(size);
-                double currentMass = 0d;
-                double sum = 0d;
-                int count = 0;
-                try {
-                    //currentMass = c1.getOutputQueue().take().doubleValue();
-                    for (int i = 0; i < size; i++) {
-                        sum = sum+c1.getOutputQueue().take();
-                        System.out.print(" "+count++);
-                    }
-                    currentMass = sum/size;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                System.out.println("В main получаем вес" + currentMass);
-                System.out.println("Текущее время :" + createDateFormat().format(System.currentTimeMillis() - start));
-
-
-                //здесь у нас создается два объекта model и ModelProperty.
-                Model model = new Model(1, dataParam, dataAll, currentMass);
-                list.add(new ModelProperty(
-                        model.realMass,
-                        model.modelMass,
-                        model.modelMassDeviation,
-                        model.modelFirstDerivativeDeviation,
-                        model.modelSecondDerivativeDeviation));
-
-
+                textField.requestFocus();
             }
+        });*/
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            int size = c1.getOutputQueue().size();
+            System.out.println(size);
+            double currentMass = 0d;
+            double sum = 0d;
+            int count = 0;
+            try {
+                //currentMass = c1.getOutputQueue().take().doubleValue();
+                for (int i = 0; i < size; i++) {
+                    sum = sum+c1.getOutputQueue().take();
+                    System.out.print(" "+count++);
+                }
+                currentMass = sum/size;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("В main получаем вес" + currentMass);
+            System.out.println("Текущее время :" + createDateFormat().format(System.currentTimeMillis() - start));
+
+
+            //здесь у нас создается два объекта model и ModelProperty.
+            Model model = new Model(1, dataParam, dataAll, currentMass);
+
+
+            Platform.runLater(new Runnable() {
+                public void run() {
+                    list.add(new ModelProperty(
+                            model.realMass,
+                            model.modelMass,
+                            model.modelMassDeviation,
+                            model.modelFirstDerivativeDeviation,
+                            model.modelSecondDerivativeDeviation));
+
+                }
+            });
+
+
         }, 0, 1, TimeUnit.SECONDS);
 
     }

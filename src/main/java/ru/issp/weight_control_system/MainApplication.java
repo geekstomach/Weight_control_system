@@ -29,9 +29,10 @@ public class MainApplication extends Application {
     ObservableList<ModelProperty> sourceList = FXCollections.observableArrayList();;
     //TODO Научиться писать правильные Javadoc
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, InterruptedException {
 
         // getting loader and a pane for the first getWeightScene.
+
 
         // loader will then give a possibility to get related controller
         FXMLLoader getWeightLoader = new FXMLLoader(MainApplication.class.getResource("getWeight.fxml"));
@@ -43,12 +44,13 @@ public class MainApplication extends Application {
         Parent setPowerPane = setPowerLoader.load();
         Scene setPowerScene = new Scene(setPowerPane, 650, 750);
 
+
         // getting loader and a pane for the second TableScene
         FXMLLoader tableLoader = new FXMLLoader(MainApplication.class.getResource("Table.fxml"));
         Parent tablePane = tableLoader.load();
         Scene setTableScene = new Scene(tablePane, 650, 750);
 
-        // injecting second scene into the controller of the first scene
+       // injecting second scene into the controller of the first scene
         MainController getWeightController = (MainController) getWeightLoader.getController();
         getWeightController.setSetPowerSceneScene(setPowerScene);
         getWeightController.setTableScene(setTableScene);
@@ -57,16 +59,24 @@ public class MainApplication extends Application {
         SetPowerController setPowerPaneController = (SetPowerController) setPowerLoader.getController();
         setPowerPaneController.setGetWeightScene(getWeightScene);
 
+
         // injecting second scene into the controller of the first scene
         TableController tableController = (TableController) tableLoader.getController();
         tableController.setGetWeightScene(getWeightScene);
-
         stage.setTitle("Get Weight");
         stage.setScene(getWeightScene);
         stage.show();
 
+       Platform.runLater(new Runnable() {
+            public void run() {
+                try {
+                    DataTransfer.transferData(sourceList);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
-        DataTransfer.transferData(sourceList);
         tableController.setDataList(sourceList);
         getWeightController.setDataList(sourceList);
         }

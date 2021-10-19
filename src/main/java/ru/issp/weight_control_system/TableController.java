@@ -15,6 +15,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import ru.issp.weight_control_system.Model.ModelProperty;
+
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -43,7 +45,7 @@ public class TableController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setCellValue();
         //https://docs.oracle.com/javase/8/javafx/api/javafx/collections/ListChangeListener.Change.html
-        table.setItems(list);
+
    }
 
 
@@ -70,7 +72,7 @@ private void setCellValue(){
 
     public void setDataList(ObservableList<ModelProperty> generalList) {
         list = generalList;
-
+        table.setItems(list);
     }
 
 

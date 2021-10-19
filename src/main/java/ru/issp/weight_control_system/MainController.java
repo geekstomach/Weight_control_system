@@ -88,7 +88,7 @@ public class MainController implements Initializable {
         System.out.println("Start");
 
         textArea.appendText(Start.getText()+ System.lineSeparator());
-        addDataToChart();
+
     }
 
     public void StopButtonClicked(ActionEvent actionEvent) throws SerialPortException {
@@ -103,9 +103,10 @@ public class MainController implements Initializable {
         //p.serialPort.closePort();
     }
     //обеспечиваем связность контроллера с главным классом
-
-    public void addDataToChart(){
+    //TODO Возможно стоит включить в модель параметр время чтобы не делать scheduledExecutorService в контроллере
+    public void addDataToChart() throws InterruptedException {
         //defining a series to display data
+        TimeUnit.MILLISECONDS.sleep(1);
         XYChart.Series<String,Number> series = new XYChart.Series<>();
         series.setName("weight(t)");
         long start = System.currentTimeMillis();
@@ -137,18 +138,18 @@ public class MainController implements Initializable {
         lineChartWeight.getData().add(series);
 
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Запускаем потоки producer/consumer ");
-/*        new Thread(p).start();
-        new Thread(c1).start();*/
-
         lineChartWeight2.setVisible(false);
 
 
     }
-    public void setDataList(ObservableList<ModelProperty> list) {
+    public void setDataList(ObservableList<ModelProperty> list) throws InterruptedException {
         this.list = list;
+addDataToChart();
+
     }
 //TODO Как добиться того что при смене сцены оставался отрисовываться график?
 // Видимо надо делать его в отдельном Pane и скрывать или показывать
