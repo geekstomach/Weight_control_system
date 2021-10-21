@@ -11,12 +11,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import jssc.SerialPortException;
 import ru.issp.weight_control_system.Model.ModelProperty;
+import ru.issp.weight_control_system.utils.PowerSetter;
+
 import java.io.IOException;
 
 
 public class MainApplication extends Application {
-    ObservableList<ModelProperty> sourceList = FXCollections.observableArrayList();;
+    ObservableList<ModelProperty> sourceList = FXCollections.observableArrayList();
+    ObservableList<Double> realMassList = FXCollections.observableArrayList();
     //TODO Научиться писать правильные Javadoc
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
@@ -27,14 +31,22 @@ public class MainApplication extends Application {
         Parent getWeightPane = getWeightLoader.load();
         Scene getWeightScene = new Scene(getWeightPane, 650, 750);
         // set listener to provide control power by keyboard
-        getWeightScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                switch (event.getCode()) {
-                    case F1:
-                        System.out.println("Кнопка F1 нажата, увеличиваем мощность на 10 единиц");
-                    case F2:  System.out.println("Кнопка F2 нажата, уменьшаем мощность на 10 единиц");
+        getWeightScene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case F1: {
+                    System.out.println("Кнопка F1 нажата, увеличиваем мощность на 10 единиц");
+                    try {
+                        PowerSetter.setPower(PowerSetter.getPOWER()+10);
+                    } catch (SerialPortException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                case F2:  System.out.println("Кнопка F2 нажата, уменьшаем мощность на 10 единиц");
+                    try {
+                        PowerSetter.setPower(PowerSetter.getPOWER()-10);
+                    } catch (SerialPortException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
             }
         });
         // getting loader and a pane for the second setPowerScene
@@ -46,28 +58,28 @@ public class MainApplication extends Application {
         // getting loader and a pane for the second TableScene
         FXMLLoader tableLoader = new FXMLLoader(MainApplication.class.getResource("Table.fxml"));
         Parent tablePane = tableLoader.load();
-        Scene setTableScene = new Scene(tablePane, 650, 750);
+        Scene setTableScene = new Scene(tablePane, 750, 750);
 
        // injecting second scene into the controller of the first scene
-        MainController getWeightController = (MainController) getWeightLoader.getController();
+        MainController getWeightController = getWeightLoader.getController();
         getWeightController.setSetPowerSceneScene(setPowerScene);
         getWeightController.setTableScene(setTableScene);
 
         // injecting first scene into the controller of the second scene
-        SetPowerController setPowerPaneController = (SetPowerController) setPowerLoader.getController();
+        SetPowerController setPowerPaneController = setPowerLoader.getController();
         setPowerPaneController.setGetWeightScene(getWeightScene);
 
 
         // injecting second scene into the controller of the first scene
-        TableController tableController = (TableController) tableLoader.getController();
+        TableController tableController = tableLoader.getController();
         tableController.setGetWeightScene(getWeightScene);
         stage.setTitle("Get Weight");
         stage.setScene(getWeightScene);
         stage.show();
 
-        DataTransfer.transferData(sourceList);
+        DataTransfer.transferData(sourceList,realMassList);
         tableController.setDataList(sourceList);
-        getWeightController.setDataList(sourceList);
+        getWeightController.setDataList(sourceList,realMassList);
 
         }
 

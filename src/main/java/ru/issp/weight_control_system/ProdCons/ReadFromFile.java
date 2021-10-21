@@ -47,9 +47,9 @@ public class ReadFromFile implements Runnable {
                     rawData[i] = reader.readByte();
                 }
             }
-        System.out.println();
+        //System.out.println();
             if (reader.readByte() == '>') {
-                System.out.println("Данные успешно получены");
+                //System.out.println("Данные успешно получены");
 //TODO после каждого значений в файле есть возврат каретки и переход на новую строку
                 reader.readByte();
                 reader.readByte();

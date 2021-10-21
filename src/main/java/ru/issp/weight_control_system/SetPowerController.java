@@ -49,29 +49,23 @@ public class SetPowerController implements Initializable {
 
     public void SetPowerButtonClicked(ActionEvent actionEvent) throws SerialPortException, InterruptedException {
         //TODO добавить стринг форматтер для того чтобы исключить ввод неверных данных
+        // оставить проверку значения в классе PowerSetter
         try {
 
     int power = Integer.parseInt(setPowerArea.getText());
      if ((power>=0)&&(power<=10000)){
          PowerSetter.setPower(power);
-         textArea.appendText("Значение мощности изменилось на " + String.valueOf(power) +"\n");
+         textArea.appendText("Значение мощности изменилось на " + power +"\n");
          currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
 }else {
          PowerSetter.setPower(PowerSetter.getPOWER());
          textArea.appendText("ВВеденные значения находятся вне допустимых границ" +"\n");
-
-         textArea.appendText("Значение мощности Осталось прежним" + String.valueOf(power) +"\n");
-
-
+         textArea.appendText("Значение мощности Осталось прежним" + power +"\n");
      }
 currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
 }catch (NumberFormatException ex) {
             textArea.appendText("ВВедите цифровое значение." +"\n");
-
-            //System.out.println("NumberFormatException");
 }
-
-
     }
 
     public void StartCoolingButtonClicked(ActionEvent actionEvent) {
@@ -128,7 +122,7 @@ currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
     public void setGetWeightScene(Scene scene) {
         getWeightScene = scene;
     }
-    public void switchSceneButtonClicked(ActionEvent actionEvent) throws IOException {
+    public void switchSceneButtonClicked(ActionEvent actionEvent) {
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         primaryStage.setScene(getWeightScene);
 

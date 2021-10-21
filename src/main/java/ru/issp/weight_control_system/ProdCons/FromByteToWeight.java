@@ -46,7 +46,7 @@ public class FromByteToWeight implements Runnable{
             zeroValue = getLongFromBytes(inputQueue.take());
             if (zeroValue == 20000000)zeroValue = getLongFromBytes(inputQueue.take());*/
 
-            System.out.println("ZeroValue "+ zeroValue);
+            //System.out.println("ZeroValue "+ zeroValue);
             while(true) {
 
                 consume(inputQueue.take());
@@ -59,13 +59,13 @@ public class FromByteToWeight implements Runnable{
         }
     }
     void consume(byte[] x) {
-        System.out.println(getLongFromBytes(x));
-        System.out.printf("[%s] Потреблено  : %s %n", Thread .currentThread().getName(),getWeightDataLong2(x)*k);
+        //System.out.println(getLongFromBytes(x));
+        //.out.printf("[%s] Потреблено  : %s %n", Thread .currentThread().getName(),getWeightDataLong2(x)*k);
 
         try {
 
             outputQueue.put((long) (getWeightDataLong2(x)*k));
-            System.out.println((long) (getWeightDataLong2(x)*k));
+            //System.out.println((long) (getWeightDataLong2(x)*k));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

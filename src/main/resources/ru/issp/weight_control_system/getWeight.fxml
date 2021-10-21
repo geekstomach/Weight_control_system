@@ -14,15 +14,13 @@
      <padding>
          <Insets top="10" bottom="10" left="20" right="10"/>
      </padding>
-    <HBox spacing="10" alignment="TOP_LEFT">
+    <HBox spacing="10" alignment="TOP_CENTER">
         <padding>
             <Insets top="10" bottom="10" left="10" right="10"/>
         </padding>
 
-        <Button fx:id="OneSample" text="Get one sample" onAction="#OneSampleButtonClicked"/>
-        <Button fx:id="Start" text="Start" onAction="#StartButtonClicked"/>
-        <Button fx:id="Stop" text="Stop" onAction="#StopButtonClicked"/>
         <Button fx:id="toSetPower" text="toSetPower" onAction="#switchToSetPowerSceneButtonClicked"/>
+        <ToggleButton fx:id="startModelCalculations" text="Start model calculations" onAction="#StartModelCalculations" />
         <Button fx:id="toTable" text="toTable" onAction="#switchToTableSceneButtonClicked"/>
     </HBox>
 
@@ -31,27 +29,25 @@
 
 </TextArea>
      <GridPane>
-         <children>
-             <LineChart fx:id="lineChartWeight" xAxis="xAxisLineChartWeight" yAxis="yAxisLineChartWeight" title="Weight" layoutX="50.0" layoutY="65.0" animated="false" >
-                 <xAxis>
-                     <CategoryAxis fx:id="xAxisLineChartWeight" label="Время" side="BOTTOM" animated="false" />
-                 </xAxis>
-                 <yAxis>
-                     <NumberAxis  fx:id="yAxisLineChartWeight" label="Вес, мг" side="LEFT" animated="false" />
-                 </yAxis>
-             </LineChart>
-         </children>
-<children>
-    <LineChart fx:id="lineChartWeight2" xAxis="xAxisLineChartWeight" yAxis="yAxisLineChartWeight" title="Weight" layoutX="50.0" layoutY="65.0" animated="false" >
-        <xAxis>
-            <CategoryAxis fx:id="xAxisLineChartWeight2" label="Время" side="BOTTOM" animated="false" />
-        </xAxis>
-        <yAxis>
-            <NumberAxis  fx:id="yAxisLineChartWeight2" label="Вес, мг" side="LEFT" animated="false" />
-        </yAxis>
-    </LineChart>
-</children>
 
+         <LineChart fx:id="lineChartWeight" xAxis="xAxisLineChartWeight" yAxis="yAxisLineChartWeight" title="Weight"
+                    layoutX="50.0" layoutY="65.0" animated="false">
+             <xAxis>
+                 <CategoryAxis fx:id="xAxisLineChartWeight" label="Время" side="BOTTOM" animated="false"/>
+             </xAxis>
+             <yAxis>
+                 <NumberAxis fx:id="yAxisLineChartWeight" label="Вес, мг" side="LEFT" animated="false"/>
+             </yAxis>
+         </LineChart>
+         <LineChart fx:id="lineChartWeight2" xAxis="xAxisLineChartWeight" yAxis="yAxisLineChartWeight"
+                    title="Weight" layoutX="50.0" layoutY="65.0" animated="false">
+             <xAxis>
+                 <CategoryAxis fx:id="xAxisLineChartWeight2" label="Время" side="BOTTOM" animated="false"/>
+             </xAxis>
+             <yAxis>
+                 <NumberAxis fx:id="yAxisLineChartWeight2" label="Вес, мг" side="LEFT" animated="false"/>
+             </yAxis>
+         </LineChart>
      </GridPane>
  </VBox>
 </AnchorPane>

@@ -13,17 +13,32 @@ public class DataAll {
     LinkedList<Double> modelFirstDerivativeDeviation;
     LinkedList<Double> modelSecondDerivativeDeviation;
 
+    public void initModelMass(Double currentMass) {
+        this.modelMass.add(currentMass);
+        modelMassDeviation.add(0d);
+        modelFirstDerivative.add(0d);
+        modelFirstDerivativeDeviation.add(0d);
+        modelSecondDerivativeDeviation.add(0d);
+    }
+public void clear (){
+       modelMass.clear();
+       modelMassDeviation.clear();
+       modelFirstDerivative.clear();
+       modelFirstDerivativeDeviation.clear();
+       modelSecondDerivativeDeviation.clear();
+
+}
     public DataAll() {
         this.modelMass = new LinkedList<>();
-        modelMass.add(0d);
+        //modelMass.add(0d);
         this.modelMassDeviation = new LinkedList<>();
-        modelMassDeviation.add(0d);
+       // modelMassDeviation.add(0d);
         this.modelFirstDerivative = new LinkedList<>();
-        modelFirstDerivative.add(0d);
+        //modelFirstDerivative.add(0d);
         this.modelFirstDerivativeDeviation = new LinkedList<>();
-        modelFirstDerivativeDeviation.add(0d);
+        //modelFirstDerivativeDeviation.add(0d);
         this.modelSecondDerivativeDeviation = new LinkedList<>();
-        modelSecondDerivativeDeviation.add(0d);
+        //modelSecondDerivativeDeviation.add(0d);
     }
 
 

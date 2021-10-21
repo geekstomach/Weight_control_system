@@ -22,8 +22,7 @@ public class  DataParam {
     private double V_upper = 1.000d;
     //скорость выращивания
     private double V_lower = 0.000d;
-//Пи
-    private double pi = Math.PI;
+
 //плотность вещества в твердом состоянии
     private double ros = 3.980d;
 //плотность вещества в жидком состоянии
@@ -72,13 +71,6 @@ public class  DataParam {
         V_lower = v_lower;
     }
 
-    public double getPi() {
-        return pi;
-    }
-
-    public void setPi(double pi) {
-        this.pi = pi;
-    }
 
     public double getRos() {
         return ros;

@@ -3,6 +3,7 @@ package ru.issp.weight_control_system.utils;
 import java.util.ArrayList;
 
 public class Maths {
+    //TODO добавить в расчеты скользящее среднее
     public static double SMA (ArrayList<Double> fullList,int buffSize){
        // double [] smaArray = new double[buffSize];
         double sum = 0;

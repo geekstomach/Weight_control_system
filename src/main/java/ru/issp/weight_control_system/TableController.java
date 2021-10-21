@@ -45,17 +45,18 @@ public class TableController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setCellValue();
         //https://docs.oracle.com/javase/8/javafx/api/javafx/collections/ListChangeListener.Change.html
+        realMass.setSortType(TableColumn.SortType.DESCENDING);
 
    }
 
 
 
 private void setCellValue(){
-    realMass.setCellValueFactory(new PropertyValueFactory<ModelProperty,Double>("realMass"));
-    modelMass.setCellValueFactory(new PropertyValueFactory<ModelProperty,Double>("modelMass"));
-    modelMassDeviation.setCellValueFactory(new PropertyValueFactory<ModelProperty,Double>("modelMassDeviation"));
-    modelFirstDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<ModelProperty,Double>("modelFirstDerivativeDeviation"));
-    modelSecondDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<ModelProperty,Double>("modelSecondDerivativeDeviation"));
+    realMass.setCellValueFactory(new PropertyValueFactory<>("realMass"));
+    modelMass.setCellValueFactory(new PropertyValueFactory<>("modelMass"));
+    modelMassDeviation.setCellValueFactory(new PropertyValueFactory<>("modelMassDeviation"));
+    modelFirstDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<>("modelFirstDerivativeDeviation"));
+    modelSecondDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<>("modelSecondDerivativeDeviation"));
 
 }
 
@@ -69,10 +70,12 @@ private void setCellValue(){
 
     }
 
-
+    //TODO научится отображать данные задом на перед (чтобы каждое новое значение добавлялось в верх таблицы)
     public void setDataList(ObservableList<ModelProperty> generalList) {
         list = generalList;
         table.setItems(list);
+
+        modelMass.setSortType(TableColumn.SortType.DESCENDING);
     }
 
 
