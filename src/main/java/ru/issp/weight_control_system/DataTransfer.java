@@ -2,15 +2,18 @@ package ru.issp.weight_control_system;
 
 
 import javafx.collections.ObservableList;
+import jssc.SerialPortException;
 import ru.issp.weight_control_system.Model.Model;
 import ru.issp.weight_control_system.Model.ModelProperty;
 import ru.issp.weight_control_system.ProdCons.FromByteToWeight;
 import ru.issp.weight_control_system.ProdCons.ReadFromFile;
 import ru.issp.weight_control_system.data.DataAll;
 import ru.issp.weight_control_system.data.DataParam;
+import ru.issp.weight_control_system.utils.PowerSetter;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.TimeZone;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataTransfer {
 static AtomicBoolean IsModelCalculationsStarted = new AtomicBoolean(false);
+static AtomicBoolean IsPowerControlStarted = new AtomicBoolean(false);
 
     public static void transferData(ObservableList<ModelProperty> sourceList, ObservableList<Double> realMassList) throws FileNotFoundException {
 
@@ -26,6 +30,9 @@ static AtomicBoolean IsModelCalculationsStarted = new AtomicBoolean(false);
         //ReadFromCom p = new ReadFromCom(q);//Читаем из COM-порта
         FromByteToWeight c1 = new FromByteToWeight(q);
         ScheduledExecutorService scheduledExecutorService;
+
+        //ВЫнесть в качестве статическимх полей
+
         DataAll dataAll = new DataAll();
         DataParam dataParam = new DataParam();
 
@@ -38,6 +45,7 @@ static AtomicBoolean IsModelCalculationsStarted = new AtomicBoolean(false);
         AtomicInteger globalCount= new AtomicInteger();
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
+
             //TODO Возможно стоит посмотреть в сторону кольцевого буфера.
             int size = c1.getOutputQueue().size();
             //System.out.println(size);
@@ -106,7 +114,51 @@ static AtomicBoolean IsModelCalculationsStarted = new AtomicBoolean(false);
                     model.modelFirstDerivativeDeviation,
                     model.modelSecondDerivativeDeviation));
 
+            if (sourceList.size()>=2) {
+                ArrayList<Double> strings = new ArrayList<>();
+                //расчет требуемого управления
+                double dP = dataParam.getKp() * sourceList.get(sourceList.size() - 1).getModelFirstDerivativeDeviation()
+                        + dataParam.getKi() * sourceList.get(sourceList.size() - 1).getModelSecondDerivativeDeviation()
+                        + dataParam.getKd() * (sourceList.get(sourceList.size() - 1).getModelSecondDerivativeDeviation() - sourceList.get(sourceList.size() - 2).getModelSecondDerivativeDeviation());
+                strings.add((dataParam.getKp() * sourceList.get(sourceList.size() - 1).getModelFirstDerivativeDeviation()));
+                strings.add(dataParam.getKi() * sourceList.get(sourceList.size() - 1).getModelSecondDerivativeDeviation());
+                strings.add(dataParam.getKd() * (sourceList.get(sourceList.size() - 1).getModelSecondDerivativeDeviation() - sourceList.get(sourceList.size() - 2).getModelSecondDerivativeDeviation()));
+strings.add(dP);
 
+                //если нажата кнопка начать управление мощностью
+if (IsPowerControlStarted.get()){
+
+    //Может быть стоит сделать константу POWER double, а кастовать в инт только при отправке в генератор
+    if (dP>dataParam.getdNPmax()){
+        try {
+            strings.add((double) PowerSetter.getPOWER());
+            PowerSetter.setPower((int) (PowerSetter.getPOWER()+dataParam.getdNPmax()));
+            strings.add((double) PowerSetter.getPOWER());
+        } catch (SerialPortException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    } else if (dP<dataParam.getdNPmin()) {
+        try {
+            strings.add((double) PowerSetter.getPOWER());
+            PowerSetter.setPower((int) (PowerSetter.getPOWER()+dataParam.getdNPmin()));
+            strings.add((double) PowerSetter.getPOWER());
+        } catch (SerialPortException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    else {
+        try {
+            strings.add((double) PowerSetter.getPOWER());
+            PowerSetter.setPower((int) (PowerSetter.getPOWER()+dP));
+            strings.add((double) PowerSetter.getPOWER());
+        } catch (SerialPortException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+System.out.println(strings);
+            }
             globalCount.set(1);
             }
             globalCount.incrementAndGet();

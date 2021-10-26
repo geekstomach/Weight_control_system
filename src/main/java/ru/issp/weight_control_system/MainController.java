@@ -151,6 +151,7 @@ public class MainController implements Initializable {
 
     public void StartModelCalculations(ActionEvent actionEvent) {
         DataTransfer.IsModelCalculationsStarted.set(startModelCalculations.isSelected());
+        DataTransfer.IsPowerControlStarted.set(startModelCalculations.isSelected());
 
     }
 

@@ -8,9 +8,9 @@ public class  DataParam {
     //TODO Добавить возможность установки параметров через интерфейс
 //все значения указываются в системе си
 
-    private double  ki, kp, kd;
-    private double dNPmax;
-    private double dNPmin;
+    private double  ki = 0.001, kp = 0.001, kd = 0.001;
+    private double dNPmax = 10;
+    private double dNPmin =-10;
 
 //радиус тигля в мм
     private double R_cruc = 48.000d;

@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import jssc.SerialPortException;
 import ru.issp.weight_control_system.Model.ModelProperty;
 import ru.issp.weight_control_system.utils.PowerSetter;
+import ru.issp.weight_control_system.utils.Singleton;
 
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ public class MainApplication extends Application {
     ObservableList<Double> realMassList = FXCollections.observableArrayList();
     //TODO Научиться писать правильные Javadoc
     @Override
-    public void start(Stage stage) throws IOException, InterruptedException {
+    public void start(Stage stage) throws IOException{
 
         // getting loader and a pane for the first getWeightScene.
         // loader will then give a possibility to get related controller
@@ -86,7 +87,7 @@ public class MainApplication extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        //Singleton.getInstance().closePort();
+        Singleton.getInstance().closePort();
         //TODO Организовать выход из цикла поучения данных по смене флага отсюда
         Platform.exit();
         System.exit(0);
