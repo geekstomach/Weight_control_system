@@ -1,12 +1,16 @@
 package ru.issp.weight_control_system.utils;
 
+import javafx.beans.property.IntegerProperty;
 import jssc.SerialPortException;
+import ru.issp.weight_control_system.MainWindowController;
+
 //Мощность посылается раз в 3 секунды без автомата
 //Мощность с автоматом посылается раз в 8*3=24 секунды
 public final class PowerSetter {
 
 
     private static int POWER = 0;
+
     /**
      * Class constructor.
      */
@@ -38,11 +42,14 @@ public final class PowerSetter {
         }
 Singleton.getInstance().writeString(hexString.toString());
 POWER = power;
+MainWindowController.POWER_PROPERTY.set(POWER);
+        System.out.println("Мощность установлена "+POWER);
     }
 
     public static int getPOWER() {
         return POWER;
     }
+
 //https://delphisources.ru/pages/faq/faq_delphi_basics/Ord.php.html
     //TODO добавить возможность разогрева и охлаждения за определенное время
 }

@@ -2,10 +2,8 @@ package ru.issp.weight_control_system;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,9 +13,7 @@ import javafx.stage.Stage;
 import jssc.SerialPortException;
 import ru.issp.weight_control_system.utils.PowerSetter;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -104,7 +100,7 @@ currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
 
             } catch (Throwable e) {
                 e.printStackTrace();
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE,"Caught exception in ScheduledExecutorService.",e);
+                Logger.getLogger(SetPowerController.class.getName()).log(Level.SEVERE,"Caught exception in ScheduledExecutorService.",e);
             }}, 0, timePeriod, TimeUnit.SECONDS);
     }
     public void StopCoolingButtonClicked(ActionEvent actionEvent) {

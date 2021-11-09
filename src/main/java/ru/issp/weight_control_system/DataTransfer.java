@@ -22,8 +22,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DataTransfer {
 static AtomicBoolean IsModelCalculationsStarted = new AtomicBoolean(false);
 static AtomicBoolean IsPowerControlStarted = new AtomicBoolean(false);
+static  DataParam dataParam = new DataParam();
 
-    public static void transferData(ObservableList<ModelProperty> sourceList, ObservableList<Double> realMassList) throws FileNotFoundException {
+
+    public static void transferData(ObservableList<ModelProperty> sourceList, ObservableList<Double> realMassList, ObservableList<Double> modelRadiusList) throws FileNotFoundException {
 
         BlockingQueue<byte[]> q = new LinkedBlockingQueue<>();
         ReadFromFile p = new ReadFromFile(q);//Читаем из файла
@@ -34,7 +36,7 @@ static AtomicBoolean IsPowerControlStarted = new AtomicBoolean(false);
         //ВЫнесть в качестве статическимх полей
 
         DataAll dataAll = new DataAll();
-        DataParam dataParam = new DataParam();
+
 
 
         System.out.println("Запускаем потоки producer/consumer ");
@@ -67,6 +69,11 @@ static AtomicBoolean IsPowerControlStarted = new AtomicBoolean(false);
             }
 
             realMassList.add(currentMass);
+
+            if (realMassList.size()>=2) {
+                System.out.println("Реальный радиус :" + calcRealR(realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2)));
+            modelRadiusList.add(calcRealR(realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2)));
+            }
             System.out.println("В main получаем вес " + currentMass);
             System.out.println("globalCount = "+globalCount);
             System.out.println(globalCount.get()%8);
@@ -107,7 +114,7 @@ static AtomicBoolean IsPowerControlStarted = new AtomicBoolean(false);
             //здесь у нас создается два объекта model и ModelProperty.
             Model model = new Model(1, dataParam, dataAll, currentMass);
 
-            sourceList.add(new ModelProperty(
+            sourceList.add(0,new ModelProperty(
                     model.realMass,
                     model.modelMass,
                     model.modelMassDeviation,
@@ -117,6 +124,7 @@ static AtomicBoolean IsPowerControlStarted = new AtomicBoolean(false);
             if (sourceList.size()>=2) {
                 ArrayList<Double> strings = new ArrayList<>();
                 //расчет требуемого управления
+                //TODO в связи с изменившимся порядком заполнения изменить расчет dP
                 double dP = dataParam.getKp() * sourceList.get(sourceList.size() - 1).getModelFirstDerivativeDeviation()
                         + dataParam.getKi() * sourceList.get(sourceList.size() - 1).getModelSecondDerivativeDeviation()
                         + dataParam.getKd() * (sourceList.get(sourceList.size() - 1).getModelSecondDerivativeDeviation() - sourceList.get(sourceList.size() - 2).getModelSecondDerivativeDeviation());
@@ -129,6 +137,7 @@ strings.add(dP);
 if (IsPowerControlStarted.get()){
 
     //Может быть стоит сделать константу POWER double, а кастовать в инт только при отправке в генератор
+    //TODO Поправить в соответствии с коэффициентами перекоса
     if (dP>dataParam.getdNPmax()){
         try {
             strings.add((double) PowerSetter.getPOWER());
@@ -165,10 +174,25 @@ System.out.println(strings);
         }, 0, 1, TimeUnit.SECONDS);
 
     }
+
+
     private static SimpleDateFormat createDateFormat() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.S");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat;
     }
 
+    private static double calcRealR (double dM){
+        double realR;
+        double one = (Math.pow(dataParam.getR_cruc(),2)-dataParam.getS_die()/Math.PI)*dM;
+        double two = Math.PI*dataParam.getRol()*Math.pow(dataParam.getR_cruc(),2)*dataParam.getS_die_cr()*dataParam.getV_cr_upper();
+        double three = dataParam.getRos()*(Math.PI*Math.pow(dataParam.getR_cruc(),2)-(dataParam.getS_die()-dataParam.getS_die_cr()))*dataParam.getV_upper();
+        try {
+            realR = (one+two)/three;
+        }catch (RuntimeException e){
+            System.out.println("Деление на ноль");
+            realR = -1d;
+        }
+
+    return realR;}
 }

@@ -23,6 +23,16 @@ public class  DataParam {
     //скорость выращивания
     private double V_lower = 0.000d;
 
+    public double getV_cr_upper() {
+        return V_cr_upper;
+    }
+
+    public void setV_cr_upper(double v_cr_upper) {
+        V_cr_upper = v_cr_upper;
+    }
+
+    private double V_cr_upper = 0d;
+
 //плотность вещества в твердом состоянии
     private double ros = 3.980d;
 //плотность вещества в жидком состоянии
