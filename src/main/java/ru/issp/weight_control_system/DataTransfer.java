@@ -69,11 +69,13 @@ static  DataParam dataParam = new DataParam();
             }
 
             realMassList.add(currentMass);
-
+//расчет радиуса
             if (realMassList.size()>=2) {
                 System.out.println("Реальный радиус :" + calcRealR(realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2)));
             modelRadiusList.add(calcRealR(realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2)));
             }
+
+
             System.out.println("В main получаем вес " + currentMass);
             System.out.println("globalCount = "+globalCount);
             System.out.println(globalCount.get()%8);

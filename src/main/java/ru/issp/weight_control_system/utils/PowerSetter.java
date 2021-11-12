@@ -40,9 +40,9 @@ public final class PowerSetter {
             //System.out.println();
 
         }
-Singleton.getInstance().writeString(hexString.toString());
-POWER = power;
-MainWindowController.POWER_PROPERTY.set(POWER);
+        Singleton.getInstance().writeString(hexString.toString());
+        POWER = power;
+        MainWindowController.POWER_PROPERTY.set(POWER);
         System.out.println("Мощность установлена "+POWER);
     }
 

@@ -20,7 +20,8 @@ import java.io.IOException;
 public class MainApplication extends Application {
     ObservableList<ModelProperty> sourceList = FXCollections.observableArrayList();
     ObservableList<Double> realMassList = FXCollections.observableArrayList();
-    ObservableList<Double> modelRadiusList = FXCollections.observableArrayList();;
+    ObservableList<Double> modelRadiusList = FXCollections.observableArrayList();
+
     //TODO Научиться писать правильные Javadoc
     @Override
     public void start(Stage stage) throws IOException {
@@ -62,7 +63,7 @@ public class MainApplication extends Application {
         getWeightScene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case W -> {
-                    System.out.println("Кнопка F1 нажата, увеличиваем мощность на 10 единиц");
+                    System.out.println("Кнопка W нажата, увеличиваем мощность на 10 единиц");
                     try {
                         PowerSetter.setPower(PowerSetter.getPOWER() + 10);
                     } catch (SerialPortException | InterruptedException e) {
@@ -70,7 +71,7 @@ public class MainApplication extends Application {
                     }
                 }
                 case Q -> {
-                    System.out.println("Кнопка F2 нажата, уменьшаем мощность на 10 единиц");
+                    System.out.println("Кнопка Q нажата, уменьшаем мощность на 10 единиц");
                     try {
                         PowerSetter.setPower(PowerSetter.getPOWER() - 10);
                     } catch (SerialPortException | InterruptedException e) {

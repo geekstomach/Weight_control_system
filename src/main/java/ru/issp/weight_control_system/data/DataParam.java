@@ -11,6 +11,8 @@ public class  DataParam {
     private double  ki = 0.001, kp = 0.001, kd = 0.001;
     private double dNPmax = 10;
     private double dNPmin =-10;
+    private double kPdefp = 1;
+    private double kPdefm = 1;
 
 //радиус тигля в мм
     private double R_cruc = 48.000d;
@@ -144,5 +146,21 @@ public class  DataParam {
 
     public void setdNPmin(double dNPmin) {
         this.dNPmin = dNPmin;
+    }
+
+    public double getkPdefp() {
+        return kPdefp;
+    }
+
+    public void setkPdefp(double kPdefp) {
+        this.kPdefp = kPdefp;
+    }
+
+    public double getkPdefm() {
+        return kPdefm;
+    }
+
+    public void setkPdefm(double kPdefm) {
+        this.kPdefm = kPdefm;
     }
 }
