@@ -16,7 +16,6 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -26,7 +25,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: cfd8dc;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.issp.weight_control_system.MainWindowController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: cfd8dc;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.issp.weight_control_system.MainWindowController">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
@@ -380,23 +379,22 @@
         </VBox>
     </left>
     <bottom>
-        <TitledPane animated="false" expanded="false" text="Таблица значений" BorderPane.alignment="CENTER">
-            <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                    <children>
-                        <TableView fx:id="table" layoutX="413.0" prefHeight="180.0">
-                            <columns>
-                                <!-- Колонки таблицы -->
-                                <TableColumn fx:id="realMass" prefWidth="150.0" text="Вес"  />
-                                <TableColumn fx:id="modelMass" prefWidth="150.0" text="Расчетный вес "  />
-                                <TableColumn fx:id="modelMassDeviation" prefWidth="150.0" text="Дельта"  />
-                                <TableColumn fx:id="modelFirstDerivativeDeviation" prefWidth="150.0" text="Первая производная" />
-                                <TableColumn fx:id="modelSecondDerivativeDeviation" prefWidth="150.0" text="Вторая производная" />
-                            </columns>
-                        </TableView>
-                    </children>
-                </AnchorPane>
-            </content>
+        <TitledPane animated="false" text="Таблица значений" BorderPane.alignment="CENTER">
+         <content>
+                  <TableView fx:id="table" maxWidth="1.7976931348623157E308" prefHeight="180.0">
+                      <columns>
+                          <!-- Колонки таблицы -->
+                          <TableColumn fx:id="realMass" prefWidth="150.0" text="Вес" />
+                          <TableColumn fx:id="modelMass" prefWidth="150.0" text="Расчетный вес " />
+                          <TableColumn fx:id="modelMassDeviation" prefWidth="150.0" text="Дельта" />
+                          <TableColumn fx:id="modelFirstDerivativeDeviation" prefWidth="150.0" text="Первая производная" />
+                          <TableColumn fx:id="modelSecondDerivativeDeviation" prefWidth="150.0" text="Вторая производная" />
+                      </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+                  </TableView>
+         </content>
         </TitledPane>
     </bottom>
 </BorderPane>

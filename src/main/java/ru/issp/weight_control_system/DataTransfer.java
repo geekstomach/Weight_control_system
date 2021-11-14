@@ -82,7 +82,7 @@ static  DataParam dataParam = new DataParam();
             System.out.println(IsModelCalculationsStarted.get());
 
             //При каждом запуске расчетов проверяем пусты ли массивы и инициализируем первым значением текущей массы
-            //TODO проверит согласование данных с текущеЙ и расчетной массы
+            //TODO проверить согласование данных с текущеЙ и расчетной массы
 
             if (IsModelCalculationsStarted.get()&&sourceList.size()==0&&globalCount.get()%8==0){
                 System.out.println("Сработал if инициализации");

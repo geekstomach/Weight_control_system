@@ -12,19 +12,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ReadFromCom implements Runnable {
-    //FIXME Выделить  SerialPort в отдельный клас Singletone
-    // - чтобы была возможность в него записывать данные по управлению мощностью
-    // - проверить какие данные я получаю с датчика веса( и отображение их на графике)
+    //FIXME проверить какие данные я получаю с датчика веса( и отображение их на графике)
 
     private final BlockingQueue<byte[]> queueFromCom;
-    //public  SerialPort serialPort;
-
     int weight;
 
     public ReadFromCom(BlockingQueue<byte[]> q){
         queueFromCom = q;
-        //this.serialPort = initSerialPort();
-  weight = 0;
+        weight = 0;
     }
 
     @Override
@@ -47,17 +42,15 @@ public class ReadFromCom implements Runnable {
         return readBytesFromCom();}
 
     private byte[] readBytesFromCom() {
-        byte[] rawData = new byte[12];//TODO очень некрасиво, переделать
+        //TODO очень некрасиво, надо ли переделать?
+        byte[] rawData = new byte[12];
         try {
-
-                //while (serialPort.getInputBufferBytesCount() <12){
-                while (Singleton.getInstance().getInputBufferBytesCount() <12){
+               while (Singleton.getInstance().getInputBufferBytesCount() <12){
                     Thread.sleep(48);
                 }
 
-                ///byte[] readBuffer = new byte[serialPort.getInputBufferBytesCount()];
+
                 byte[] readBuffer = new byte[Singleton.getInstance().getInputBufferBytesCount()];
-                //readBuffer = serialPort.readBytes(readBuffer.length);
                 readBuffer = Singleton.getInstance().readBytes(readBuffer.length);
                 rawData = readBuffer;
 
@@ -73,7 +66,6 @@ public class ReadFromCom implements Runnable {
             for (int i = 0; i < s.length(); i++) {
                 try {
                     Thread.sleep(48);
-                    //serialPort.writeByte(s.getBytes()[i]);
                     Singleton.getInstance().writeByte(s.getBytes()[i]);
                 } catch (SerialPortException | InterruptedException e) {
                     System.err.println(e);
@@ -82,30 +74,4 @@ public class ReadFromCom implements Runnable {
             }
 
         }
-
-    /*private SerialPort initSerialPort(){
-        //TODO Добавить установку порта через интерфейс
-        // - В будущем переработать на MODBUS
-        System.out.println("Listening all com ports available on device");
-        //Метод getPortNames() возвращает массив строк. Элементы массива уже отсортированы.
-        //Getting all serial port names available on device
-
-        String[] portNames = SerialPortList.getPortNames();
-        for (String portName : portNames) {
-            System.out.println(portName);
-        }
-        System.out.println("We work with " + portNames[0]);
-
-        //В конструктор класса передаём имя порта с которым мы будем работать
-        SerialPort serialPort = new SerialPort(portNames[0]);
-        try {
-            serialPort.openPort();
-        } catch (SerialPortException e) {
-            e.printStackTrace();
-        }
-    return serialPort;}*/
-
-
-
-
 }

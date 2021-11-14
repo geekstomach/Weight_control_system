@@ -7,12 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FromByteToWeight implements Runnable{
-    //FIXME - сделать так чтобы
-    // - все данные получаемые за секунду суммировались о отправлялись средним значением далее (на график и в расчеты)
-    // - либо просто данные читались раз в секунду
-    // - добавить обработку получаемого сигнала (производные и расчеты)
-    // - Возможно необходимо создать объект с полями и расчетами
-
 
     private final BlockingQueue <byte[]> inputQueue;
 
@@ -22,7 +16,7 @@ public class FromByteToWeight implements Runnable{
 
     private final LinkedBlockingQueue<Long> outputQueue;
 
-    //TODO добавить возможность калибровки датчика веса (может отдельной подпрограммой)
+    //TODO добавить возможность и проверить калибровку датчика веса
     //Используем если читаем из файла
     double k = 0.23;
     long zeroValue = 4044534;
@@ -41,10 +35,8 @@ public class FromByteToWeight implements Runnable{
 
         try{
 
-/*            //TODO разобраться откуда  20000000 при старте(вроде пропало при Singleton)
             Thread.sleep(48);
             zeroValue = getLongFromBytes(inputQueue.take());
-            if (zeroValue == 20000000)zeroValue = getLongFromBytes(inputQueue.take());*/
 
             //System.out.println("ZeroValue "+ zeroValue);
             while(true) {
@@ -60,7 +52,7 @@ public class FromByteToWeight implements Runnable{
     }
     void consume(byte[] x) {
         //System.out.println(getLongFromBytes(x));
-        //.out.printf("[%s] Потреблено  : %s %n", Thread .currentThread().getName(),getWeightDataLong2(x)*k);
+        //System.out.printf("[%s] Потреблено  : %s %n", Thread .currentThread().getName(),getWeightDataLong2(x)*k);
 
         try {
 
@@ -70,9 +62,6 @@ public class FromByteToWeight implements Runnable{
             e.printStackTrace();
         }
     }
-
-    //TODO проверить правильность обнуления начального значения
-    //TODO проверить правильность получаемых данных
 
     private Long getWeightDataLong2(byte[] rawData) {
        return getLongFromBytes(rawData)-zeroValue;
@@ -91,8 +80,3 @@ public class FromByteToWeight implements Runnable{
     }
 
 }
-
-/*Иногда, но не всегда(проследить взаимосвязь не удалось)
-получаю в методе getLongFromBytes на выходе 20000000 при старте
-думаю что связано с незакрытым COM портом
-        */

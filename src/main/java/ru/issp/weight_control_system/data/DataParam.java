@@ -2,10 +2,7 @@ package ru.issp.weight_control_system.data;
 
 public class  DataParam {
 
-    //FIXME поискать паттерн для констант и переменных
-    // - https://www.baeldung.com/java-constants-good-practices
-    // - https://stackoverflow.com/questions/66066/what-is-the-best-way-to-implement-constants-in-java
-    //TODO Добавить возможность установки параметров через интерфейс
+    //TODO Проверить размерность всех величин
 //все значения указываются в системе си
 
     private double  ki = 0.001, kp = 0.001, kd = 0.001;

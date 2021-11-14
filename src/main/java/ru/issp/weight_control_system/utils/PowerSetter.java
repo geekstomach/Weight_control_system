@@ -17,8 +17,6 @@ public final class PowerSetter {
     public PowerSetter() {
         throw new java.lang.UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
-    //TODO управление мощностью идет раз в 3 секунды
-
     public static void setPower(int power) throws SerialPortException, InterruptedException {
         // Посылает на генератор задание мощности (0..10000) <=> 0..100% мощности
         char startMarker = '<';
@@ -50,6 +48,4 @@ public final class PowerSetter {
         return POWER;
     }
 
-//https://delphisources.ru/pages/faq/faq_delphi_basics/Ord.php.html
-    //TODO добавить возможность разогрева и охлаждения за определенное время
 }
