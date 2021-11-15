@@ -2,6 +2,7 @@ package ru.issp.weight_control_system;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -68,7 +69,7 @@ public class MainWindowController implements Initializable {
 
     public TableView<ModelProperty> table;
 
-    public TableColumn<ModelProperty,Double> time;
+    public TableColumn<ModelProperty,String> time;
     public TableColumn<ModelProperty, Double> realMass;
     public TableColumn<ModelProperty,Double> modelMass;
     public TableColumn<ModelProperty,Double> modelMassDeviation;
@@ -131,9 +132,9 @@ public class MainWindowController implements Initializable {
                     }
                     //TODO Возможно стоит добавить в иф что эти расчеты раз в 8 тактов как в TransferData
                     if (startModelCalculations.isSelected()&&list.size()!=0) {
-                        seriesM.getData().add(new XYChart.Data<>(createDateFormat().format(now), list.get(0).getModelMass()));
-                        seriesdM.getData().add(new XYChart.Data<>(createDateFormat().format(now), list.get(0).getModelFirstDerivativeDeviation()));
-                        seriesddM.getData().add(new XYChart.Data<>(createDateFormat().format(now), list.get(0).getModelSecondDerivativeDeviation()));
+                        seriesM.getData().add(new XYChart.Data<>(createDateFormat().format(now), list.get(0).getModelMassProperty()));
+                        seriesdM.getData().add(new XYChart.Data<>(createDateFormat().format(now), list.get(0).getMassFirstDerivativeDeviationProperty()));
+                        seriesddM.getData().add(new XYChart.Data<>(createDateFormat().format(now), list.get(0).getMassSecondDerivativeDeviationProperty()));
                     }
                     //ограничение отображаемых данных
                     if (seriesWeight.getData().size() > WINDOW_SIZE)
@@ -262,12 +263,22 @@ public class MainWindowController implements Initializable {
     }
     private void setTableCellValue(){
 
-        time.setCellValueFactory(new PropertyValueFactory<>("time"));
-        realMass.setCellValueFactory(new PropertyValueFactory<>("realMass"));
-        modelMass.setCellValueFactory(new PropertyValueFactory<>("modelMass"));
-        modelMassDeviation.setCellValueFactory(new PropertyValueFactory<>("modelMassDeviation"));
-        modelFirstDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<>("modelFirstDerivativeDeviation"));
-        modelSecondDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<>("modelSecondDerivativeDeviation"));
+        //time.setCellValueFactory(new PropertyValueFactory<>("time"));
+        //time.setCellValueFactory(cellDataFeatures -> cellDataFeatures.getValue().timeProperty());
+        time.setCellValueFactory(cellDataFeatures -> {
+            String formattedTime = cellDataFeatures.getValue().getTimeProperty();
+            formattedTime = formattedTime + "\n" +  POWER_PROPERTY;
+            return new SimpleStringProperty(formattedTime);
+        });
+        realMass.setCellValueFactory(new PropertyValueFactory<>("realMassProperty"));
+        modelMass.setCellValueFactory(new PropertyValueFactory<>("modelMassProperty"));
+        modelMassDeviation.setCellValueFactory(new PropertyValueFactory<>("massDeviationProperty"));
+/*        modelMassDeviation.setCellValueFactory(cellDataFeatures -> {
+            String formattedModelMassDeviation = String.valueOf(cellDataFeatures.getValue().getMassDeviation());
+            formattedModelMassDeviation = formattedModelMassDeviation +"\n";
+        });*/
+        modelFirstDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<>("massFirstDerivativeDeviationProperty"));
+        modelSecondDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<>("massSecondDerivativeDeviationProperty"));
 
     }
 
