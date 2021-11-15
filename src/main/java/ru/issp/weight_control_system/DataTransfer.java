@@ -23,7 +23,7 @@ public class DataTransfer {
 static AtomicBoolean IsModelCalculationsStarted = new AtomicBoolean(false);
 static AtomicBoolean IsPowerControlStarted = new AtomicBoolean(false);
 static  DataParam dataParam = new DataParam();
-
+static int modelTact = 9;
 
     public static void transferData(ObservableList<ModelProperty> sourceList, ObservableList<Double> realMassList, ObservableList<Double> modelRadiusList) throws FileNotFoundException {
 
@@ -33,11 +33,7 @@ static  DataParam dataParam = new DataParam();
         FromByteToWeight c1 = new FromByteToWeight(q);
         ScheduledExecutorService scheduledExecutorService;
 
-        //ВЫнесть в качестве статическимх полей
-
         DataAll dataAll = new DataAll();
-
-
 
         System.out.println("Запускаем потоки producer/consumer ");
         new Thread(p).start();
@@ -78,13 +74,13 @@ static  DataParam dataParam = new DataParam();
 
             System.out.println("В main получаем вес " + currentMass);
             System.out.println("globalCount = "+globalCount);
-            System.out.println(globalCount.get()%8);
+            System.out.println(globalCount.get()%modelTact);
             System.out.println(IsModelCalculationsStarted.get());
 
             //При каждом запуске расчетов проверяем пусты ли массивы и инициализируем первым значением текущей массы
             //TODO проверить согласование данных с текущеЙ и расчетной массы
 
-            if (IsModelCalculationsStarted.get()&&sourceList.size()==0&&globalCount.get()%8==0){
+            if (IsModelCalculationsStarted.get()&&sourceList.size()==0&&globalCount.get()%modelTact==0){
                 System.out.println("Сработал if инициализации");
                 System.out.println(sourceList.size());
                 System.out.println(dataAll);
@@ -103,7 +99,7 @@ static  DataParam dataParam = new DataParam();
                 System.out.println(dataAll);
             }
 
-            if (globalCount.get()%8==0&&IsModelCalculationsStarted.get()){
+            if (globalCount.get()%modelTact==0&&IsModelCalculationsStarted.get()){
 
 
             System.out.println("Текущее время :" + createDateFormat().format(System.currentTimeMillis() - start));
@@ -117,6 +113,7 @@ static  DataParam dataParam = new DataParam();
             Model model = new Model(1, dataParam, dataAll, currentMass);
 
             sourceList.add(0,new ModelProperty(
+                    createDateFormat().format(System.currentTimeMillis() - start),
                     model.realMass,
                     model.modelMass,
                     model.modelMassDeviation,
@@ -142,17 +139,13 @@ if (IsPowerControlStarted.get()){
     //TODO Поправить в соответствии с коэффициентами перекоса
     if (dP>dataParam.getdNPmax()){
         try {
-            strings.add((double) PowerSetter.getPOWER());
-            PowerSetter.setPower((int) (PowerSetter.getPOWER()+dataParam.getdNPmax()));
-            strings.add((double) PowerSetter.getPOWER());
+            PowerSetter.setPower((int) (PowerSetter.getPOWER()+dataParam.getdNPmax()*dataParam.getkPdefp()));
         } catch (SerialPortException | InterruptedException e) {
             e.printStackTrace();
         }
-    } else if (dP<dataParam.getdNPmin()) {
+    } else if (dP<-dataParam.getdNPmax()){
         try {
-            strings.add((double) PowerSetter.getPOWER());
-            PowerSetter.setPower((int) (PowerSetter.getPOWER()+dataParam.getdNPmin()));
-            strings.add((double) PowerSetter.getPOWER());
+            PowerSetter.setPower((int) (PowerSetter.getPOWER()-dataParam.getdNPmax()*dataParam.getkPdefm()));
         } catch (SerialPortException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -166,7 +159,6 @@ if (IsPowerControlStarted.get()){
             e.printStackTrace();
         }
     }
-
 }
 System.out.println(strings);
             }
@@ -195,6 +187,5 @@ System.out.println(strings);
             System.out.println("Деление на ноль");
             realR = -1d;
         }
-
     return realR;}
 }

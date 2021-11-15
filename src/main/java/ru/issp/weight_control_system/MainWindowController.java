@@ -1,10 +1,7 @@
 package ru.issp.weight_control_system;
 
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,8 +20,6 @@ import ru.issp.weight_control_system.utils.PowerSetter;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
@@ -34,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainWindowController implements Initializable {
-
 
     public ToggleButton startModelCalculations;
     public ToggleButton startControl;
@@ -56,7 +50,6 @@ public class MainWindowController implements Initializable {
     public Spinner<Double> kPdefpSpinner;
     public Spinner<Double> kPdefmSpinner;
 
-
     public Label pullingRateLabel;
     public Label powerLabel;
 
@@ -74,6 +67,8 @@ public class MainWindowController implements Initializable {
     public NumberAxis yAxisLineChartddM;
 
     public TableView<ModelProperty> table;
+
+    public TableColumn<ModelProperty,Double> time;
     public TableColumn<ModelProperty, Double> realMass;
     public TableColumn<ModelProperty,Double> modelMass;
     public TableColumn<ModelProperty,Double> modelMassDeviation;
@@ -95,9 +90,7 @@ public class MainWindowController implements Initializable {
         //defining a series to display data
         XYChart.Series<String,Number> seriesWeight = new XYChart.Series<>();
         XYChart.Series<String,Number> seriesRadius = new XYChart.Series<>();
-        //XYChart.Series<String,Number> seriesM = new XYChart.Series<>();
-        //XYChart.Series<String,Number> seriesdM = new XYChart.Series<>();
-        //XYChart.Series<String,Number> seriesddM = new XYChart.Series<>();
+
 
         seriesWeight.setName("weight(t)");
         seriesRadius.setName("radius(t)");
@@ -124,8 +117,10 @@ public class MainWindowController implements Initializable {
 
                 // Update the chart
                 Platform.runLater(() -> {
-                    
+
                     long now =System.currentTimeMillis() - start;
+
+
                     //График текущего веса
                     seriesWeight.getData().add(
                             new XYChart.Data<>(createDateFormat().format(now), finalWeight));
@@ -266,6 +261,8 @@ public class MainWindowController implements Initializable {
         pullingRateLabel.textProperty().bind(pullingRateSpinner.valueProperty().asString());
     }
     private void setTableCellValue(){
+
+        time.setCellValueFactory(new PropertyValueFactory<>("time"));
         realMass.setCellValueFactory(new PropertyValueFactory<>("realMass"));
         modelMass.setCellValueFactory(new PropertyValueFactory<>("modelMass"));
         modelMassDeviation.setCellValueFactory(new PropertyValueFactory<>("modelMassDeviation"));
@@ -273,14 +270,14 @@ public class MainWindowController implements Initializable {
         modelSecondDerivativeDeviation.setCellValueFactory(new PropertyValueFactory<>("modelSecondDerivativeDeviation"));
 
     }
+
     private static SimpleDateFormat createDateFormat() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat;
     }
 
-
-    public void switchChart(ActionEvent actionEvent) {
+    public void switchChart() {
         String targetChart = switchChartChoiceBox.getSelectionModel().getSelectedItem();
         System.out.println("Выбираем график"+ targetChart);
         switch (targetChart) {

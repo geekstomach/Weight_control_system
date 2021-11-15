@@ -2,10 +2,13 @@ package ru.issp.weight_control_system.Model;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class ModelProperty {
 
-    public ModelProperty(Double realMass,Double modelMass,Double modelMassDeviation,Double modelFirstDerivativeDeviation,Double modelSecondDerivativeDeviation) {
+    public ModelProperty(String time, Double realMass,Double modelMass,Double modelMassDeviation,Double modelFirstDerivativeDeviation,Double modelSecondDerivativeDeviation) {
+        setTime(time);
         setRealMass(realMass);
         setModelMass(modelMass);
         setModelMassDeviation(modelMassDeviation);
@@ -73,6 +76,19 @@ public class ModelProperty {
         this.modelSecondDerivativeDeviation.set(modelSecondDerivativeDeviation);
     }
 
+    public String getTime() {
+        return time.get();
+    }
+
+    public StringProperty timeProperty() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time.set(time);
+    }
+
+    private final StringProperty time = new SimpleStringProperty();
     private final DoubleProperty realMass = new SimpleDoubleProperty();
     private final DoubleProperty modelMass = new SimpleDoubleProperty();
     private final DoubleProperty modelMassDeviation = new SimpleDoubleProperty();
@@ -82,6 +98,7 @@ public class ModelProperty {
     @Override
     public String toString() {
         return "ModelProperty{" +
+                "time=" + time +
                 "realMass=" + realMass +
                 ", modelMass=" + modelMass +
                 ", modelMassDeviation=" + modelMassDeviation +

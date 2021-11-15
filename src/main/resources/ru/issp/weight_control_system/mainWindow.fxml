@@ -384,6 +384,7 @@
                   <TableView fx:id="table" maxWidth="1.7976931348623157E308" prefHeight="180.0">
                       <columns>
                           <!-- Колонки таблицы -->
+                          <TableColumn fx:id="time" prefWidth="150.0" text="Время" />
                           <TableColumn fx:id="realMass" prefWidth="150.0" text="Вес" />
                           <TableColumn fx:id="modelMass" prefWidth="150.0" text="Расчетный вес " />
                           <TableColumn fx:id="modelMassDeviation" prefWidth="150.0" text="Дельта" />
