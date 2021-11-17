@@ -5,11 +5,11 @@ public class  DataParam {
     //TODO Проверить размерность всех величин
 //все значения указываются в системе си
 
-    private double  ki = 0.001, kp = 0.001, kd = 0.001;
-    private double dNPmax = 10;
-    private double dNPmin =-10;
-    private double kPdefp = 1;
-    private double kPdefm = 1;
+    private double  ki = 0.001d, kp = 0.001d, kd = 0.001d;
+    private double dNPmax = 10d;
+    private double dNPmin =-10d;
+    private double kPdefp = 1d;
+    private double kPdefm = 1d;
 
 //радиус тигля в мм
     private double R_cruc = 48.000d;

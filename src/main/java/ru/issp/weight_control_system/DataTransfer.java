@@ -18,6 +18,7 @@ import java.util.TimeZone;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 public class DataTransfer {
@@ -42,7 +43,8 @@ static int readTact = 3;
         new Thread(p).start();
         new Thread(c1).start();
 //запускаем расчеты по расписанию
-        long start = System.currentTimeMillis();
+        long startGlobal = System.currentTimeMillis();
+        AtomicLong startLocal = new AtomicLong(System.currentTimeMillis());
         AtomicInteger globalCount= new AtomicInteger();//используется для запуска startModelCalculations раз в n тактов
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
@@ -50,7 +52,7 @@ static int readTact = 3;
             String time;
             double realMass;
             double modelMass;
-            double modelMassFirstDerivative = 0;
+            double modelMassFirstDerivative;
             double massDeviation;
             double massFirstDerivativeDeviation;
             double massSecondDerivativeDeviation;
@@ -88,10 +90,11 @@ static int readTact = 3;
             if (realMassList.size()>=2) {
                 System.out.println("Реальный радиус :" + calcRealR(realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2)));
             modelRadiusList.add(calcRealR(realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2)));
-            radius = calcRealR(calcRealR(realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2)));
+            radius = calcRealR(realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2));
+
             }
 //Расчет уровня расплава в тигле
-
+//TODO добавить рассчет уровня расплава
             System.out.println("В main получаем вес " + currentMass);
             System.out.println("globalCount = "+globalCount);
             System.out.println(globalCount.get()%modelTact);
@@ -107,6 +110,7 @@ static int readTact = 3;
                 System.out.println(dataAll);
                 dataAll.initModelMass(currentMass);
                 System.out.println(dataAll);
+                startLocal.set(System.currentTimeMillis());
             }
             //При каждом окончании расчетов очищаем массивы
 
@@ -123,48 +127,38 @@ static int readTact = 3;
             if (globalCount.get()%modelTact==0&&IsModelCalculationsStarted.get()){
 
 
-            System.out.println("Текущее время :" + createDateFormat().format(System.currentTimeMillis() - start));
-            time = createDateFormat().format(System.currentTimeMillis() - start);
+            System.out.println("Текущее время работы от старта приложения :" + createDateFormat().format(System.currentTimeMillis() - startGlobal));
+            System.out.println("Текущее время работы от начала расчетов :" + createDateFormat().format(System.currentTimeMillis() - startLocal.get()));
+            time = createDateFormat().format(System.currentTimeMillis() - startLocal.get());
 
             //и второй лист для управления, наполнение включается также по кнопке ("Включить расчет")
             // с приравниванием начальной модельной массы текущей реальной, и получением из UI коэффициентов ПИД регулятора
             // наполнять раз в n тактов и запускать управление мощностью по кнопке ("Запустить управление").
 
-            //здесь у нас создается два объекта model и ModelProperty.
+            //здесь у нас создается объект model, где рассчитываются данные.
             Model model = new Model(readTact*modelTact, dataParam, dataAll, currentMass);
                 realMass = model.realMass;
                 modelMass = model.modelMass;
+                modelMassFirstDerivative = model.modelFirstDerivative;
                 massDeviation = model.modelMassDeviation;
                 massFirstDerivativeDeviation = model.modelFirstDerivativeDeviation;
                 massSecondDerivativeDeviation = model.modelSecondDerivativeDeviation;
 
-
-/*            sourceList.add(0,new ModelProperty(
-                    createDateFormat().format(System.currentTimeMillis() - start),
-                    model.realMass,
-                    model.modelMass,
-                    model.modelMassDeviation,
-                    model.modelFirstDerivativeDeviation,
-                    model.modelSecondDerivativeDeviation));*/
-
-
-
-//TODO избавиться от sourceList
+                //TODO избавиться от sourceList в рассечете мощности
             if (sourceList.size()>=2) {
                 ArrayList<Double> strings = new ArrayList<>();
                 //расчет требуемого управления
-                //TODO в связи с изменившимся порядком заполнения изменить расчет dP
-                double dP = dataParam.getKp() * sourceList.get(sourceList.size() - 1).getMassFirstDerivativeDeviationProperty()
-                        + dataParam.getKi() * sourceList.get(sourceList.size() - 1).getMassSecondDerivativeDeviationProperty()
-                        + dataParam.getKd() * (sourceList.get(sourceList.size() - 1).getMassSecondDerivativeDeviationProperty() - sourceList.get(sourceList.size() - 2).getMassSecondDerivativeDeviationProperty());
-                strings.add((dataParam.getKp() * sourceList.get(sourceList.size() - 1).getMassFirstDerivativeDeviationProperty()));
-                strings.add(dataParam.getKi() * sourceList.get(sourceList.size() - 1).getMassSecondDerivativeDeviationProperty());
-                strings.add(dataParam.getKd() * (sourceList.get(sourceList.size() - 1).getMassSecondDerivativeDeviationProperty() - sourceList.get(sourceList.size() - 2).getMassSecondDerivativeDeviationProperty()));
+                integralPartOfThePower = dataParam.getKp() * sourceList.get(0).getMassFirstDerivativeDeviationProperty();
+                proportionalPartOfThePower = dataParam.getKi() * sourceList.get(0).getMassSecondDerivativeDeviationProperty();
+                differentialPartOfThePower = dataParam.getKd() * (sourceList.get(0).getMassSecondDerivativeDeviationProperty() - sourceList.get(1).getMassSecondDerivativeDeviationProperty());
+
+                double dP = integralPartOfThePower+proportionalPartOfThePower+differentialPartOfThePower;
+
+                strings.add(integralPartOfThePower);
+                strings.add(proportionalPartOfThePower);
+                strings.add(differentialPartOfThePower);
 
                 powerDeviation = dP;
-                integralPartOfThePower = dataParam.getKp() * sourceList.get(sourceList.size() - 1).getMassFirstDerivativeDeviationProperty();
-                proportionalPartOfThePower = dataParam.getKi() * sourceList.get(sourceList.size() - 1).getMassSecondDerivativeDeviationProperty();
-                differentialPartOfThePower = dataParam.getKd() * (sourceList.get(sourceList.size() - 1).getMassSecondDerivativeDeviationProperty() - sourceList.get(sourceList.size() - 2).getMassSecondDerivativeDeviationProperty());
 
                 //если нажата кнопка начать управление мощностью
 if (IsPowerControlStarted.get()){
@@ -198,7 +192,7 @@ if (IsPowerControlStarted.get()){
             }
             globalCount.set(1);
 
-//добавляем полученные данные в лист
+//добавляем полученные данные в НАЧАЛО списка
                 sourceList.add(0,new ModelProperty(time,//+
                         realMass,//+
                         modelMass,//+
@@ -219,6 +213,7 @@ if (IsPowerControlStarted.get()){
             }
             globalCount.incrementAndGet();
 
+           // System.out.println(sourceList.get(0).getRadiusProperty()+" "+radius);
 
 
         }, 0, readTact, TimeUnit.SECONDS);
