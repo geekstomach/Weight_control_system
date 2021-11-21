@@ -251,22 +251,22 @@ public class ModelProperty {
     @Override
     public String toString() {
         return "ModelProperty{" +
-                "time=" + timeProperty +
-                ", realMass=" + realMassProperty +
-                ", modelMass=" + modelMassProperty +
-                ", modelMassFirstDerivative=" + modelMassFirstDerivativeProperty +
-                ", massDeviation=" + massDeviationProperty +
-                ", massFirstDerivativeDeviation=" + massFirstDerivativeDeviationProperty +
-                ", massSecondDerivativeDeviation=" + massSecondDerivativeDeviationProperty +
-                ", integralPartOfThePower=" + integralPartOfThePowerProperty +
-                ", proportionalPartOfThePower=" + proportionalPartOfThePowerProperty +
-                ", differentialPartOfThePower=" + differentialPartOfThePowerProperty +
-                ", powerDeviation=" + powerDeviationProperty +
-                ", currentPower=" + currentPowerProperty +
-                ", pullingRate=" + pullingRateProperty +
-                ", length=" + lengthProperty +
-                ", meltLevelHeight=" + meltLevelHeightProperty +
-                ", radius=" + radiusProperty +
+                "time=" + timeProperty +"\n"+
+                ", realMass=" + realMassProperty +"\n"+
+                ", modelMass=" + modelMassProperty +"\n"+
+                ", modelMassFirstDerivative=" + modelMassFirstDerivativeProperty +"\n"+
+                ", massDeviation=" + massDeviationProperty +"\n"+
+                ", massFirstDerivativeDeviation=" + massFirstDerivativeDeviationProperty +"\n"+
+                ", massSecondDerivativeDeviation=" + massSecondDerivativeDeviationProperty +"\n"+
+                ", integralPartOfThePower=" + integralPartOfThePowerProperty +"\n"+
+                ", proportionalPartOfThePower=" + proportionalPartOfThePowerProperty +"\n"+
+                ", differentialPartOfThePower=" + differentialPartOfThePowerProperty +"\n"+
+                ", powerDeviation=" + powerDeviationProperty +"\n"+
+                ", currentPower=" + currentPowerProperty +"\n"+
+                ", pullingRate=" + pullingRateProperty +"\n"+
+                ", length=" + lengthProperty +"\n"+
+                ", meltLevelHeight=" + meltLevelHeightProperty +"\n"+
+                ", radius=" + radiusProperty +"\n"+
                 '}';
     }
 

@@ -11,22 +11,12 @@ public class Model {
 
     public Double realMass;
     public Double modelMass;
-    public Double modelMassDeviation;
+    public Double massDeviation;
     public Double modelFirstDerivative;
-    public Double modelFirstDerivativeDeviation;
-    public Double modelSecondDerivativeDeviation;
+    public Double massFirstDerivativeDeviation;
+    public Double massSecondDerivativeDeviation;
 
-    @Override
-    public String toString() {
-        return "Model{" +
-                "dt=" + dt +
-                ", modelMass=" + modelMass +
-                ", modelMassDeviation=" + modelMassDeviation +
-                ", modelFirstDerivative=" + modelFirstDerivative +
-                ", modelFirstDerivativeDeviation=" + modelFirstDerivativeDeviation +
-                ", modelSecondDerivativeDeviation=" + modelSecondDerivativeDeviation +
-                '}';
-    }
+
 
     public Model(int dt, DataParam dataParam, DataAll dataAll, double currentMass) {
         this.dt = dt;
@@ -34,18 +24,17 @@ public class Model {
         this.dataAll = dataAll;
         this.realMass = currentMass;
         this.modelFirstDerivative = getModelFirstDerivative();
-        dataAll.getModelFirstDerivative().add(modelFirstDerivative);
+        dataAll.getModelMassFirstDerivative().add(modelFirstDerivative);
         this.modelMass = getModelMass();
-        this.modelMassDeviation = getModelMassDeviation(currentMass);
+        this.massDeviation = getModelMassDeviation(currentMass);
 
 
-        this.modelFirstDerivativeDeviation = getModelFirstDerivativeDeviation();
+        this.massFirstDerivativeDeviation = getMassFirstDerivativeDeviation();
         dataAll.getModelMass().add(modelMass);
-        dataAll.getModelMassDeviation().add(modelMassDeviation);
-        this.modelSecondDerivativeDeviation = getModelSecondDerivativeDeviation();
-        dataAll.getModelFirstDerivativeDeviation().add(modelFirstDerivativeDeviation);
-
-        dataAll.getModelSecondDerivativeDeviation().add(modelSecondDerivativeDeviation);
+        dataAll.getMassDeviation().add(massDeviation);
+        this.massSecondDerivativeDeviation = getMassSecondDerivativeDeviation();
+        dataAll.getMassFirstDerivativeDeviation().add(massFirstDerivativeDeviation);
+        dataAll.getMassSecondDerivativeDeviation().add(massSecondDerivativeDeviation);
     }
     Double getModelFirstDerivative() {
         //Всегда одинакова до смены параметров?
@@ -62,18 +51,25 @@ public class Model {
         return dataAll.getModelMass().getLast() + modelFirstDerivative * dt;
     }
     Double getModelMassDeviation(Double currentMass) {
-        return currentMass - modelMass;
+        return currentMass - dataAll.getModelMass().getLast();
+    }
+    Double getMassFirstDerivativeDeviation() {
+        return (massDeviation -dataAll.getMassDeviation().getLast())/dt;
+    }
+    Double getMassSecondDerivativeDeviation() {
+        return (massFirstDerivativeDeviation -dataAll.getMassFirstDerivativeDeviation().getLast())/dt;
     }
 
 
-    Double getModelFirstDerivativeDeviation() {
-        return (modelMassDeviation-dataAll.getModelMassDeviation().getLast())/dt;
+    @Override
+    public String toString() {
+        return "Model{" +
+                "realMass=" + realMass +
+                ", modelMass=" + modelMass +
+                ", massDeviation=" + massDeviation +
+                ", modelFirstDerivative=" + modelFirstDerivative +
+                ", massFirstDerivativeDeviation=" + massFirstDerivativeDeviation +
+                ", massSecondDerivativeDeviation=" + massSecondDerivativeDeviation +
+                '}';
     }
-    Double getModelSecondDerivativeDeviation() {
-        return (modelFirstDerivativeDeviation-dataAll.getModelFirstDerivativeDeviation().getLast())/dt;
-    }
-
-
-
-
 }

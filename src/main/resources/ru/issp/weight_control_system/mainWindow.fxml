@@ -152,7 +152,7 @@
                     <Insets/>
                 </opaqueInsets>
             </Separator>
-            <Pane prefHeight="92.0" prefWidth="166.0" style="-fx-border-color: black;">
+           <Pane prefHeight="92.0" prefWidth="166.0" style="-fx-border-color: black;">
                 <padding>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                 </padding>
@@ -160,7 +160,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="20.0"/>
                 </VBox.margin>
                 <Label alignment="CENTER" contentDisplay="TOP" layoutX="20.0" layoutY="-26.0" prefHeight="32.0"
-                       prefWidth="120.0" style="-fx-background-color: cfd8dc;" text="Mass,г" wrapText="true">
+                       prefWidth="120.0" style="-fx-background-color: cfd8dc;" text="SMA Radius,мм" wrapText="true">
                     <font>
                         <Font size="22.0"/>
                     </font>
@@ -168,14 +168,14 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </padding>
                 </Label>
-                <Label alignment="CENTER" contentDisplay="TOP" layoutX="20.0" layoutY="30.0" prefHeight="32.0"
+                <Label fx:id="smaRadiusLabel" alignment="CENTER" contentDisplay="TOP" layoutX="20.0" layoutY="30.0" prefHeight="32.0"
                        prefWidth="120.0" style="-fx-background-color: transparent;" text="1000.00" wrapText="true">
                     <font>
                         <Font size="22.0"/>
                     </font>
                 </Label>
             </Pane>
-            <Separator prefHeight="20.0" prefWidth="200.0"/>
+<!--             <Separator prefHeight="20.0" prefWidth="200.0"/>
             <Pane prefHeight="92.0" prefWidth="166.0" style="-fx-border-color: black;">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="20.0"/>
@@ -211,7 +211,7 @@
                         <Font size="22.0"/>
                     </font>
                 </Label>
-            </Pane>
+            </Pane>-->
         </VBox>
     </right>
     <left>
@@ -227,7 +227,7 @@
                     <Insets left="5.0" right="5.0" top="5.0"/>
                 </padding>
             </Label>
-            <Spinner fx:id="pullingRateSpinner" amountToStepBy="0.1" editable="true" max="10.0" min="0.0"
+            <Spinner fx:id="pullingRateSpinner" amountToStepBy="0.01" editable="true" max="10.0" min="0.01"
                      prefHeight="35.0" prefWidth="218.0">
                 <VBox.margin>
                     <Insets left="10.0" right="10.0"/>
@@ -247,7 +247,7 @@
                     <Insets left="5.0" right="5.0" top="5.0"/>
                 </padding>
             </Label>
-            <Spinner fx:id="rSpinner" amountToStepBy="0.1" editable="true" max="10.0" min="0.0" prefHeight="35.0"
+            <Spinner fx:id="rSpinner" amountToStepBy="0.01" editable="true" max="50.0" min="0.1" prefHeight="35.0"
                      prefWidth="212.0">
                 <VBox.margin>
                     <Insets left="10.0" right="10.0"/>

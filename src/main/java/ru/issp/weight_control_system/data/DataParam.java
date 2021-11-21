@@ -18,7 +18,7 @@ public class  DataParam {
 //площадь верхней части формообразователя кв.мм
     private double S_die_cr = 350.000d;
 //скорость выращивания
-    private double V_upper = 1.000d;
+    private double V_upper = 0.100d;
     //скорость выращивания
     private double V_lower = 0.000d;
 

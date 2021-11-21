@@ -1,6 +1,8 @@
 package ru.issp.weight_control_system;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -50,10 +52,12 @@ public class MainWindowController implements Initializable {
     public Spinner<Double> kPdefpSpinner;
     public Spinner<Double> kPdefmSpinner;
 
-    public Label pullingRateLabel;
+    //public Label pullingRateLabel;
     public Label powerLabel;
+    public Label smaRadiusLabel;
 
     public static SimpleIntegerProperty POWER_PROPERTY = new SimpleIntegerProperty(PowerSetter.getPOWER());
+
 
     public ChoiceBox<String> switchChartChoiceBox;
     public LineChart<String,Number> lineChartRadius;
@@ -131,24 +135,24 @@ public class MainWindowController implements Initializable {
 
                     //График текущего веса
                     seriesWeight.getData().add(
-                            new XYChart.Data<>(createDateFormat().format(now), finalWeight));
+                            new XYChart.Data<>(createDateFormatForCarts().format(now), finalWeight));
                     //График веса SMA
                     seriesSMAWeight.getData().add(
-                            new XYChart.Data<>(createDateFormat().format(now), Maths.SMA(realMassList,2))
+                            new XYChart.Data<>(createDateFormatForCarts().format(now), Maths.SMA(realMassList,2))
                     );
                     //График расчетного радиуса
                     if (modelRadiusList.size()!=0) {
                     seriesRadius.getData().add(
-                            new XYChart.Data<>(createDateFormat().format(now), modelRadiusList.get(modelRadiusList.size() - 1)));
+                            new XYChart.Data<>(createDateFormatForCarts().format(now), modelRadiusList.get(modelRadiusList.size() - 1)));
                     }
 
                     //График текущей мощности
-                    seriesCurrentPower.getData().add(new XYChart.Data<>(createDateFormat().format(now),POWER_PROPERTY.getValue()));
+                    seriesCurrentPower.getData().add(new XYChart.Data<>(createDateFormatForCarts().format(now),POWER_PROPERTY.getValue()));
 
                     //TODO Возможно стоит добавить в иф что эти расчеты раз в 8 тактов как в TransferData
                     if (startModelCalculations.isSelected()&&list.size()!=0) {
-                        seriesMassDeviation.getData().add(new XYChart.Data<>(createDateFormat().format(now), list.get(0).getMassDeviationProperty()));
-                        seriesMassFirstDerivativeDeviation.getData().add(new XYChart.Data<>(createDateFormat().format(now), list.get(0).getMassFirstDerivativeDeviationProperty()));
+                        seriesMassDeviation.getData().add(new XYChart.Data<>(createDateFormatForCarts().format(now), list.get(0).getMassDeviationProperty()));
+                        seriesMassFirstDerivativeDeviation.getData().add(new XYChart.Data<>(createDateFormatForCarts().format(now), list.get(0).getMassFirstDerivativeDeviationProperty()));
                     }
                     //ограничение отображаемых данных
                     if (seriesWeight.getData().size() > WINDOW_SIZE)
@@ -159,11 +163,13 @@ public class MainWindowController implements Initializable {
                         seriesMassDeviation.getData().remove(0);
                     if (seriesMassFirstDerivativeDeviation.getData().size() > WINDOW_SIZE)
                         seriesMassFirstDerivativeDeviation.getData().remove(0);
+
+                    smaRadiusLabel.setText(String.valueOf(modelRadiusSMA()));
                 });
             } catch (Throwable e) {
                 e.printStackTrace();
                 Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE,"Caught exception in ScheduledExecutorService.",e);
-            }}, 0, 1000, TimeUnit.MILLISECONDS);
+            }}, 0, DataTransfer.readTact, TimeUnit.SECONDS);
 
         lineChartWeight.getData().add(seriesWeight);
         lineChartSMAWeight.getData().add(seriesSMAWeight);
@@ -245,7 +251,6 @@ public class MainWindowController implements Initializable {
 
 
     }
-
     private void initSpinnerListener(){
         pullingRateSpinner.valueProperty().addListener((obs, oldValue, newValue) ->{
             System.out.println("Значение скорости изменилось с "+oldValue+" на "+newValue);
@@ -286,7 +291,7 @@ public class MainWindowController implements Initializable {
     }
     private void initBindings(){
         powerLabel.textProperty().bind(POWER_PROPERTY.asString());
-        pullingRateLabel.textProperty().bind(pullingRateSpinner.valueProperty().asString());
+       // pullingRateLabel.textProperty().bind(pullingRateSpinner.valueProperty().asString());
     }
 
     private void setTableCellValue(){
@@ -374,12 +379,22 @@ public class MainWindowController implements Initializable {
             }
         };
     }
-    private static SimpleDateFormat createDateFormat() {
+    private static SimpleDateFormat createDateFormatForCarts() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat;
     }
+    private Double modelRadiusSMA(){
+        double smaModelRadius = 0d;
+        int count = 0;
+        if (modelRadiusList.size()>WINDOW_SIZE){
+            for (int i =modelRadiusList.size()-WINDOW_SIZE; i < modelRadiusList.size(); i++) {
+                smaModelRadius = smaModelRadius + modelRadiusList.get(i);
 
+            }
+        }
+        return smaModelRadius/WINDOW_SIZE;
+}
     public void switchChart() {
         String targetChart = switchChartChoiceBox.getSelectionModel().getSelectedItem();
         System.out.println("Выбираем график"+ targetChart);
@@ -410,5 +425,6 @@ public class MainWindowController implements Initializable {
             }
         }
     }
+
 }
 

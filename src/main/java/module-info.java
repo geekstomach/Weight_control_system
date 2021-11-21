@@ -4,7 +4,8 @@ module ru.issp.weight_control_system {
     requires javafx.graphics;
     requires jssc;
     requires java.logging;
-
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
 
 
     opens ru.issp.weight_control_system to javafx.fxml;

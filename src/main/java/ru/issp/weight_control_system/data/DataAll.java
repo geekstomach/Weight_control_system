@@ -8,36 +8,36 @@ public class DataAll {
 
 
     LinkedList<Double> modelMass;
-    LinkedList<Double> modelMassDeviation;
-    LinkedList<Double> modelFirstDerivative;
-    LinkedList<Double> modelFirstDerivativeDeviation;
-    LinkedList<Double> modelSecondDerivativeDeviation;
+    LinkedList<Double> massDeviation;
+    LinkedList<Double> modelMassFirstDerivative;
+    LinkedList<Double> massFirstDerivativeDeviation;
+    LinkedList<Double> massSecondDerivativeDeviation;
 
     public void initModelMass(Double currentMass) {
-        this.modelMass.add(currentMass);
-        modelMassDeviation.add(0d);
-        modelFirstDerivative.add(0d);
-        modelFirstDerivativeDeviation.add(0d);
-        modelSecondDerivativeDeviation.add(0d);
+        modelMass.add(currentMass);
+        massDeviation.add(0d);
+        modelMassFirstDerivative.add(0d);
+        massFirstDerivativeDeviation.add(0d);
+        massSecondDerivativeDeviation.add(0d);
     }
 public void clear (){
        modelMass.clear();
-       modelMassDeviation.clear();
-       modelFirstDerivative.clear();
-       modelFirstDerivativeDeviation.clear();
-       modelSecondDerivativeDeviation.clear();
+       massDeviation.clear();
+       modelMassFirstDerivative.clear();
+       massFirstDerivativeDeviation.clear();
+       massSecondDerivativeDeviation.clear();
 
 }
     public DataAll() {
         this.modelMass = new LinkedList<>();
         //modelMass.add(0d);
-        this.modelMassDeviation = new LinkedList<>();
+        this.massDeviation = new LinkedList<>();
        // modelMassDeviation.add(0d);
-        this.modelFirstDerivative = new LinkedList<>();
+        this.modelMassFirstDerivative = new LinkedList<>();
         //modelFirstDerivative.add(0d);
-        this.modelFirstDerivativeDeviation = new LinkedList<>();
+        this.massFirstDerivativeDeviation = new LinkedList<>();
         //modelFirstDerivativeDeviation.add(0d);
-        this.modelSecondDerivativeDeviation = new LinkedList<>();
+        this.massSecondDerivativeDeviation = new LinkedList<>();
         //modelSecondDerivativeDeviation.add(0d);
     }
 
@@ -46,39 +46,48 @@ public void clear (){
     public LinkedList<Double> getModelMass() {
         return modelMass;
     }
-    public LinkedList<Double> getModelMassDeviation() {
-        return modelMassDeviation;
+    public LinkedList<Double> getMassDeviation() {
+        return massDeviation;
     }
 
-    public LinkedList<Double> getModelFirstDerivative() {
-        return modelFirstDerivative;
+    public LinkedList<Double> getModelMassFirstDerivative() {
+        return modelMassFirstDerivative;
     }
-    public LinkedList<Double> getModelFirstDerivativeDeviation() {
-        return modelFirstDerivativeDeviation;
-    }
-
-    public void setModelFirstDerivativeDeviation(LinkedList<Double> modelFirstDerivativeDeviation) {
-        this.modelFirstDerivativeDeviation = modelFirstDerivativeDeviation;
-    }
-    public void setModelFirstDerivative(LinkedList<Double> modelFirstDerivative) {
-        this.modelFirstDerivative = modelFirstDerivative;
-    }
-    public LinkedList<Double> getModelSecondDerivativeDeviation() {
-        return modelSecondDerivativeDeviation;
+    public LinkedList<Double> getMassFirstDerivativeDeviation() {
+        return massFirstDerivativeDeviation;
     }
 
-    public void setModelSecondDerivativeDeviation(LinkedList<Double> modelSecondDerivativeDeviation) {
-        this.modelSecondDerivativeDeviation = modelSecondDerivativeDeviation;
+    public void setMassFirstDerivativeDeviation(LinkedList<Double> massFirstDerivativeDeviation) {
+        this.massFirstDerivativeDeviation = massFirstDerivativeDeviation;
+    }
+    public void setModelMassFirstDerivative(LinkedList<Double> modelMassFirstDerivative) {
+        this.modelMassFirstDerivative = modelMassFirstDerivative;
+    }
+    public LinkedList<Double> getMassSecondDerivativeDeviation() {
+        return massSecondDerivativeDeviation;
+    }
+
+    public void setMassSecondDerivativeDeviation(LinkedList<Double> massSecondDerivativeDeviation) {
+        this.massSecondDerivativeDeviation = massSecondDerivativeDeviation;
     }
 
     @Override
     public String toString() {
         return "DataAll{" +
                 "modelMass=" + modelMass +"\n"+
-                ", modelMassDeviation=" + modelMassDeviation +"\n"+
-                ", modelFirstDerivative=" + modelFirstDerivative +"\n"+
-                ", modelFirstDerivativeDeviation=" + modelFirstDerivativeDeviation +"\n"+
-                ", modelSecondDerivativeDeviation=" + modelSecondDerivativeDeviation +"\n"+
+                ", modelMassDeviation=" + massDeviation +"\n"+
+                ", modelFirstDerivative=" + modelMassFirstDerivative +"\n"+
+                ", modelFirstDerivativeDeviation=" + massFirstDerivativeDeviation +"\n"+
+                ", modelSecondDerivativeDeviation=" + massSecondDerivativeDeviation +"\n"+
+                '}';
+    }
+    public String lastToString() {
+        return "DataAll{" +
+                "modelMass=" + modelMass.getLast() +"\n"+
+                ", modelMassDeviation=" + massDeviation.getLast() +"\n"+
+                ", modelFirstDerivative=" + modelMassFirstDerivative.getLast() +"\n"+
+                ", modelFirstDerivativeDeviation=" + massFirstDerivativeDeviation.getLast() +"\n"+
+                ", modelSecondDerivativeDeviation=" + massSecondDerivativeDeviation.getLast() +"\n"+
                 '}';
     }
 }
