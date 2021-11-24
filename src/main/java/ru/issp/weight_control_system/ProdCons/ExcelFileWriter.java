@@ -38,21 +38,23 @@ public class ExcelFileWriter{
            dataRow.createCell(15).setCellValue("V_upper");
            dataRow.createCell(16).setCellValue("length");
            dataRow.createCell(17).setCellValue("meltLevelHeight");
-           dataRow.createCell(18).setCellValue("Model radius");
-           dataRow.createCell(19).setCellValue("Radius");
+           dataRow.createCell(18).setCellValue("Radius from Model");
+           dataRow.createCell(19).setCellValue("Radius from Real");
+           dataRow.createCell(20).setCellValue("Radius");
 
        }
 
 
-    public static void writeToExcelFile(LinkedList linkedList) throws FileNotFoundException {
+    public static void writeToExcelFile(String time,LinkedList<Double> linkedList) throws FileNotFoundException {
 
 
     Row dataRow = sheet.createRow(count.getAndIncrement());
 
-    dataRow.createCell(0).setCellValue((String) linkedList.get(0));
-        for (int i = 1; i < linkedList.size(); i++) {
+    dataRow.createCell(0).setCellValue(time);
 
-            dataRow.createCell(i).setCellValue((double)linkedList.get(i));
+        for (int i = 0; i < linkedList.size(); i++) {
+
+            dataRow.createCell(i+1).setCellValue(linkedList.get(i));
             }
         try (OutputStream fileOut = new FileOutputStream("workbook.xls")) {
             workbook.write(fileOut);

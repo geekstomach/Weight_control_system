@@ -94,12 +94,12 @@
                     </yAxis>
                 </LineChart>
                 <Separator prefWidth="200.0" GridPane.rowIndex="1"/>
-                <LineChart fx:id="lineChartWeight" animated="false" title="Weight" GridPane.rowIndex="2">
+                <LineChart fx:id="lineChartWeight" animated="false" title="Weight"  GridPane.rowIndex="2">
                     <xAxis>
                         <CategoryAxis label="Время" side="BOTTOM" fx:id="xAxisLineChartWeight"/>
                     </xAxis>
                     <yAxis>
-                        <NumberAxis fx:id="yAxisLineChartWeight" label="Вес, мг" side="LEFT"/>
+                        <NumberAxis fx:id="yAxisLineChartWeight" label="Вес, мг" side="RIGHT" forceZeroInRange="false"/>
                     </yAxis>
                 </LineChart>
                 <LineChart fx:id="lineChartMassFirstDerivativeDeviation" animated="false" prefWidth="106.0"

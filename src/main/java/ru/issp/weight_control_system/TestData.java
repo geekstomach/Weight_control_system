@@ -12,7 +12,7 @@ public class TestData implements Runnable {
 
     private final LinkedBlockingQueue<Double> outputQueue = new LinkedBlockingQueue<>();
     double currentMass = 0L;
-    double deviationMass = 9.933186656786307d;
+    double deviationMass = 131.780276313365d;
     Random random = new Random();
     //double deviationMass = 10d;
     @Override
@@ -20,8 +20,9 @@ public class TestData implements Runnable {
         try {
 
             while (true){
-                Thread.sleep(100);
-                currentMass = currentMass + deviationMass+ random.nextGaussian()-0.5;
+                Thread.sleep(1000);
+                currentMass = currentMass + deviationMass + random.nextGaussian();
+                //currentMass = currentMass + deviationMass;
                 //currentMass = currentMass + (long)deviationMass +(long)(deviationMass*Math.random())-(long)(deviationMass*Math.random());
                 //System.out.println("Генерируем тестовые данные в TestData "+ currentMass);
                 outputQueue.put(currentMass);

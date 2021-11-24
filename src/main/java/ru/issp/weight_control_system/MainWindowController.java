@@ -1,8 +1,6 @@
 package ru.issp.weight_control_system;
 
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -101,7 +99,7 @@ public class MainWindowController implements Initializable {
     XYChart.Series<String,Number> seriesMassDeviation = new XYChart.Series<>();
     XYChart.Series<String,Number> seriesMassFirstDerivativeDeviation = new XYChart.Series<>();
 
-
+//TODO реализовать графики на Timeline
     public void addDataToChart() {
         //defining a series to display data
         XYChart.Series<String,Number> seriesWeight = new XYChart.Series<>();
@@ -114,14 +112,14 @@ public class MainWindowController implements Initializable {
 
         // this is used to display time in HH:mm:ss format
 
-        // setup a scheduled executor to periodically put data into the chart
+        // set up a scheduled executor to periodically put data into the chart
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
         // put dummy data onto graph per second
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             // get a random integer between 0-10
             try {
-                //TODO разобраться с инициализацией чтоб эксепшэнов небыло
+                //TODO разобраться с инициализацией чтоб исключений не было
                 double weight = 0;
                 //if (list.size()!=0)weight = list.get(list.size()-1).getRealMass();
                 if (realMassList.size()!=0)weight = realMassList.get(realMassList.size()-1);
@@ -218,8 +216,8 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //TODO сделать отдельный метод инициализации для всех спиннеров,
-        // поправить зраницы и убрать дефолтные значения,
+        //TODO сделать отдельный метод инициализации для всех Spinner,
+        // поправить границы и убрать дефолтные значения,
         // ограничить скорость близкой но не равной нулю.
 
         initSpinnerDefaultValue();
@@ -386,8 +384,7 @@ public class MainWindowController implements Initializable {
     }
     private Double modelRadiusSMA(){
         double smaModelRadius = 0d;
-        int count = 0;
-        if (modelRadiusList.size()>WINDOW_SIZE){
+          if (modelRadiusList.size()>WINDOW_SIZE){
             for (int i =modelRadiusList.size()-WINDOW_SIZE; i < modelRadiusList.size(); i++) {
                 smaModelRadius = smaModelRadius + modelRadiusList.get(i);
 
