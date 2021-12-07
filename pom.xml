@@ -94,7 +94,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>ru.issp.weight_control_system/ru.issp.weight_control_system.MainApplication
+                            <mainClass>ru.issp.weight_control_system/ru.issp.weight_control_system.Main
                             </mainClass>
                         </configuration>
                     </execution>

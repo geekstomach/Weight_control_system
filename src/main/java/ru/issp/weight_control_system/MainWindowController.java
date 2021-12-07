@@ -1,11 +1,14 @@
 package ru.issp.weight_control_system;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -16,20 +19,23 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
+import jssc.SerialPortException;
 import ru.issp.weight_control_system.Model.ModelProperty;
-import ru.issp.weight_control_system.utils.Maths;
 import ru.issp.weight_control_system.utils.PowerSetter;
 
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,8 +67,8 @@ public class MainWindowController implements Initializable {
     public LineChart<String,Number> lineChartRadius;
         public CategoryAxis xAxisLineChartRadius;
         public NumberAxis yAxisLineChartRadius;
-    public LineChart<String,Number> lineChartWeight;
-        public CategoryAxis xAxisLineChartWeight;
+    public LineChart<Number,Number> lineChartWeight;
+        public NumberAxis xAxisLineChartWeight;
         public NumberAxis yAxisLineChartWeight;
     public LineChart<String,Number> lineChartMassDeviation;
         public CategoryAxis xAxisLineChartMassDeviation;
@@ -91,8 +97,11 @@ public class MainWindowController implements Initializable {
 
     private Scene setPowerScene;
 
-    final int WINDOW_SIZE = 20;
+    final int WINDOW_SIZE = 240;
+
     private ObservableList<ModelProperty> list = FXCollections.observableArrayList();
+
+
     private ObservableList<Double> realMassList = FXCollections.observableArrayList();
     private ObservableList<Double> modelRadiusList = FXCollections.observableArrayList();
 
@@ -100,7 +109,8 @@ public class MainWindowController implements Initializable {
     XYChart.Series<String,Number> seriesMassFirstDerivativeDeviation = new XYChart.Series<>();
 
 //TODO реализовать графики на Timeline
-    public void addDataToChart() {
+    /*public void addDataToChartFull() {
+
         //defining a series to display data
         XYChart.Series<String,Number> seriesWeight = new XYChart.Series<>();
         XYChart.Series<String,Number> seriesSMAWeight = new XYChart.Series<>();
@@ -176,8 +186,143 @@ public class MainWindowController implements Initializable {
         lineChartMassFirstDerivativeDeviation.getData().add(seriesMassFirstDerivativeDeviation);
         lineChartCurrentPower.getData().add(seriesCurrentPower);
 
-    }
+    }*/
+    public void addDataToChart() {
 
+        //defining a series to display data
+        XYChart.Series<Number,Number> seriesWeight = new XYChart.Series<>();
+        XYChart.Series<String,Number> seriesRadius = new XYChart.Series<>();
+
+        //setting up lineChartWeight properties
+        lineChartWeight.setCreateSymbols(false);
+        xAxisLineChartWeight.setTickLabelFormatter(stringConverterLong());
+        xAxisLineChartWeight.setForceZeroInRange(false);
+
+
+        long start = System.currentTimeMillis();
+
+        // set up a scheduled executor to periodically put data into the chart
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+
+        // put dummy data onto graph per second
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            try {
+                //TODO разобраться с инициализацией чтоб исключений не было
+                double weight = 0;
+                if (realMassList.size()!=0)weight = realMassList.get(realMassList.size()-1);
+                double finalWeight = weight;
+
+                // Update the chart
+                Platform.runLater(() -> {
+
+                    long now =System.currentTimeMillis() - start;
+
+                    //График текущего веса
+                    seriesWeight.getData().add(
+                            new XYChart.Data<>(now, finalWeight));
+
+
+                    //График расчетного радиуса
+                    if (modelRadiusList.size()!=0) {
+                        seriesRadius.getData().add(
+                                new XYChart.Data<>(createDateFormatForCarts().format(now), modelRadiusList.get(modelRadiusList.size() - 1)));
+                    }
+                    //TODO Возможно стоит добавить в иф что эти расчеты раз в 8 тактов как в TransferData
+                    if (startModelCalculations.isSelected()&&list.size()!=0) {
+                        seriesMassDeviation.getData().add(new XYChart.Data<>(createDateFormatForCarts().format(now), list.get(0).getMassDeviationProperty()));
+                        seriesMassFirstDerivativeDeviation.getData().add(new XYChart.Data<>(createDateFormatForCarts().format(now), list.get(0).getMassFirstDerivativeDeviationProperty()));
+                    }
+                    //ограничение отображаемых данных
+                    if (seriesWeight.getData().size() > WINDOW_SIZE){
+
+                        seriesWeight.getData().remove(0);}
+
+                    if (seriesRadius.getData().size() > WINDOW_SIZE)
+                        seriesRadius.getData().remove(0);
+                    if (seriesMassDeviation.getData().size() > WINDOW_SIZE)
+                        seriesMassDeviation.getData().remove(0);
+                    if (seriesMassFirstDerivativeDeviation.getData().size() > WINDOW_SIZE)
+                        seriesMassFirstDerivativeDeviation.getData().remove(0);
+
+                    smaRadiusLabel.setText(stringFormatToFourDecimalPlaces(modelRadiusSMA()));
+                });
+            } catch (Throwable e) {
+                e.printStackTrace();
+                Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE,"Caught exception in ScheduledExecutorService.",e);
+            }}, 0, DataTransfer.dataParam.getReadTact(), TimeUnit.SECONDS);
+
+        lineChartWeight.getData().add(seriesWeight);
+
+
+        lineChartRadius.getData().add(seriesRadius);
+        lineChartMassDeviation.getData().add(seriesMassDeviation);
+        lineChartMassFirstDerivativeDeviation.getData().add(seriesMassFirstDerivativeDeviation);
+
+    }
+    public void addDataToChartWithTimeline(){
+        lineChartWeight.setCreateSymbols(false);
+        xAxisLineChartWeight.setTickLabelFormatter(stringConverterLong());
+        xAxisLineChartWeight.setForceZeroInRange(false);
+        AtomicInteger count = new AtomicInteger(0);
+        long start = System.currentTimeMillis();
+        //defining a series to display data
+        XYChart.Series<Number,Number> seriesWeight = new XYChart.Series<>();
+        XYChart.Series<String,Number> seriesRadius = new XYChart.Series<>();
+
+        EventHandler<ActionEvent> chartUpdaterWeight = actionEvent -> {
+
+            long now =System.currentTimeMillis() - start;
+            double weight = 0;
+            if (realMassList.size()!=0)weight = realMassList.get(realMassList.size()-1);
+            double finalWeight = weight;
+
+            //График текущего веса
+            seriesWeight.getData().add(
+                    new XYChart.Data<>(now, finalWeight));
+            //График MassDeviation
+            if ((count.getAndIncrement()%DataTransfer.dataParam.getModelTact()==0)&&startModelCalculations.isSelected()&&list.size()!=0) {
+System.out.println("Сработал такт модели");
+seriesMassDeviation.getData().add(new XYChart.Data<>(createDateFormatForCarts().format(now), list.get(0).getMassDeviationProperty()));
+if (seriesMassDeviation.getData().size() > WINDOW_SIZE)
+    seriesMassDeviation.getData().remove(0);
+}
+            if (seriesWeight.getData().size() > WINDOW_SIZE)
+                seriesWeight.getData().remove(0);
+        };
+        EventHandler<ActionEvent> chartUpdaterOthers = actionEvent -> {
+            long now =System.currentTimeMillis() - start;
+            //График расчетного радиуса
+            if (modelRadiusList.size()!=0) {
+                seriesRadius.getData().add(
+                        new XYChart.Data<>(createDateFormatForCarts().format(now), modelRadiusList.get(modelRadiusList.size() - 1)));
+            }
+            //График MassFirstDerivativeDeviation
+            if (startModelCalculations.isSelected()&&list.size()!=0) {
+                System.out.println("Сработал такт модели");
+                seriesMassFirstDerivativeDeviation.getData().add(
+                        new XYChart.Data<>(createDateFormatForCarts().format(now), list.get(0).getMassFirstDerivativeDeviationProperty()));
+
+            }
+            if (seriesRadius.getData().size() > WINDOW_SIZE)
+                seriesRadius.getData().remove(0);
+            if (seriesMassFirstDerivativeDeviation.getData().size() > WINDOW_SIZE)
+                seriesMassFirstDerivativeDeviation.getData().remove(0);
+            smaRadiusLabel.setText(stringFormatToFourDecimalPlaces(modelRadiusSMA()));
+        };
+
+        lineChartWeight.getData().add(seriesWeight);
+        lineChartRadius.getData().add(seriesRadius);
+        lineChartMassDeviation.getData().add(seriesMassDeviation);
+        lineChartMassFirstDerivativeDeviation.getData().add(seriesMassFirstDerivativeDeviation);
+
+        Timeline updateChartWeight = new Timeline(new KeyFrame(Duration.seconds(DataTransfer.dataParam.getReadTact()), chartUpdaterWeight));
+        Timeline updateChartOthers = new Timeline(new KeyFrame(Duration.seconds(DataTransfer.dataParam.getReadTact()*DataTransfer.dataParam.getModelTact()), chartUpdaterOthers));
+
+        updateChartWeight.setCycleCount(Timeline.INDEFINITE);
+        updateChartOthers.setCycleCount(Timeline.INDEFINITE);
+        updateChartWeight.play();
+        updateChartOthers.play();
+    }
     public void setSetPowerScene(Scene scene) {
         setPowerScene = scene;
     }
@@ -186,8 +331,12 @@ public class MainWindowController implements Initializable {
         list = sourceList;
         realMassList = sourceRealMassList;
         modelRadiusList = sourceModelRadiusList;
-        addDataToChart();
+        //addDataToChart();
+        addDataToChartWithTimeline();
         table.setItems(list);
+
+        //Todo разобраться в какой момент добавлять обработчиков нажатий клавиш , т.к в init крашит программу
+        setOnKeyPressedListener();
     }
 
     public void startModelCalculations() {
@@ -224,7 +373,13 @@ public class MainWindowController implements Initializable {
         initSpinnerListener();
         initBindings();
         setTableCellValue();
+
+        //Одни из вариантов изменения цвета графика
+        //lineChartRadius.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/css/lineChart.css")).toExternalForm());
+        //lineChartRadius.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent;");
     }
+
+
     private void initSpinnerDefaultValue(){
 
 
@@ -303,44 +458,77 @@ public class MainWindowController implements Initializable {
         });
 
         radiusColumn.setCellValueFactory(cellDataFeatures -> {
-            String formattedRadius = Double.toString(cellDataFeatures.getValue().getRadiusProperty());
+            String formattedRadius = stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getRadiusProperty());
             formattedRadius = formattedRadius + "\n" +  cellDataFeatures.getValue().getMeltLevelHeightProperty();
             return new SimpleStringProperty(formattedRadius);
         });
 
         currentPowerColumn.setCellValueFactory(cellDataFeatures -> {
             String formattedTime = Integer.toString(cellDataFeatures.getValue().getCurrentPowerProperty());
-            formattedTime = formattedTime + "\n" +  cellDataFeatures.getValue().getPowerDeviationProperty();
+            formattedTime = formattedTime + "\n" +  stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getPowerDeviationProperty());
             return new SimpleStringProperty(formattedTime);
         });
 
         modelMassColumn.setCellValueFactory(cellDataFeatures -> {
-            String formattedRadius = Double.toString(cellDataFeatures.getValue().getModelMassProperty());
-            formattedRadius = formattedRadius + "\n" +  cellDataFeatures.getValue().getModelMassFirstDerivativeProperty();
+            String formattedRadius = stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getModelMassProperty());
+            formattedRadius = formattedRadius + "\n" +  stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getModelMassFirstDerivativeProperty());
             return new SimpleStringProperty(formattedRadius);
         });
 
         massDeviationColumn.setCellValueFactory(cellDataFeatures -> {
-            String formattedRadius = Double.toString(cellDataFeatures.getValue().getMassDeviationProperty());
-            formattedRadius = formattedRadius + "\n" +  cellDataFeatures.getValue().getIntegralPartOfThePowerProperty();
+            String formattedRadius = stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getMassDeviationProperty());
+            formattedRadius = formattedRadius + "\n" +  stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getIntegralPartOfThePowerProperty());
             return new SimpleStringProperty(formattedRadius);
         });
 
         massFirstDerivativeDeviationColumn.setCellValueFactory(cellDataFeatures -> {
-            String formattedRadius = Double.toString(cellDataFeatures.getValue().getMassFirstDerivativeDeviationProperty());
-            formattedRadius = formattedRadius + "\n" +  cellDataFeatures.getValue().getProportionalPartOfThePowerProperty();
+            String formattedRadius = stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getMassFirstDerivativeDeviationProperty());
+            formattedRadius = formattedRadius + "\n" +  stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getProportionalPartOfThePowerProperty());
             return new SimpleStringProperty(formattedRadius);
         });
 
         massSecondDerivativeDeviationColumn.setCellValueFactory(cellDataFeatures -> {
-            String formattedRadius = Double.toString(cellDataFeatures.getValue().getMassSecondDerivativeDeviationProperty());
-            formattedRadius = formattedRadius + "\n" +  cellDataFeatures.getValue().getDifferentialPartOfThePowerProperty();
+            //String formattedRadius = Double.toString(cellDataFeatures.getValue().getMassSecondDerivativeDeviationProperty());
+            String formattedRadius = stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getMassSecondDerivativeDeviationProperty());
+            formattedRadius = formattedRadius + "\n" +  stringFormatToFourDecimalPlaces(cellDataFeatures.getValue().getDifferentialPartOfThePowerProperty());
             return new SimpleStringProperty(formattedRadius);
         });
 
     }
+    private String stringFormatToFourDecimalPlaces(Double d){
+        DecimalFormat format = new DecimalFormat("0.0000");
+        return format.format(d);
+    }
+    private StringConverter<Number> stringConverterLong(){
+        return new StringConverter<>() {
+            @Override
+            public String toString(Number value) {
+                // If the specified value is null, return a zero-length String
+                if (value == null) {
+                    return "";
+                }
 
+                return createDateFormatForCarts().format(value);
+            }
 
+            @Override
+            public Long fromString(String value) {
+                // If the specified value is null or zero-length, return null
+                if (value == null) {
+                    return null;
+                }
+
+                value = value.trim();
+
+                if (value.length() < 1) {
+                    return null;
+                }
+
+                // Perform the requested parsing
+                return Long.valueOf(value);
+            }
+        };
+    }
     private StringConverter<Double> stringConverterToThreeDecimalPlaces(){
         return new StringConverter<>() {
             private final DecimalFormat df = new DecimalFormat("#.###");
@@ -384,13 +572,14 @@ public class MainWindowController implements Initializable {
     }
     private Double modelRadiusSMA(){
         double smaModelRadius = 0d;
-          if (modelRadiusList.size()>WINDOW_SIZE){
-            for (int i =modelRadiusList.size()-WINDOW_SIZE; i < modelRadiusList.size(); i++) {
+        int period = 10;
+          if (modelRadiusList.size()>period){
+            for (int i =modelRadiusList.size()-period; i < modelRadiusList.size(); i++) {
                 smaModelRadius = smaModelRadius + modelRadiusList.get(i);
 
             }
         }
-        return smaModelRadius/WINDOW_SIZE;
+        return smaModelRadius/period;
 }
     public void switchChart() {
         String targetChart = switchChartChoiceBox.getSelectionModel().getSelectedItem();
@@ -421,6 +610,58 @@ public class MainWindowController implements Initializable {
                 lineChartCurrentPower.setVisible(false);
             }
         }
+    }
+
+    public void setOnKeyPressedListener(){
+        //TODO разобраться почему и как правильно
+        // Set - это контракт говорит что он задаёт новое значение. Используйте addEvent
+        lineChartWeight.getScene().setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case W -> {
+                    System.out.println("Кнопка W нажата, увеличиваем мощность на 10 единиц");
+                    try {
+                        PowerSetter.setPower(PowerSetter.getPOWER() + 10);
+                    } catch (SerialPortException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case Q -> {
+                    System.out.println("Кнопка Q нажата, уменьшаем мощность на 10 единиц");
+                    try {
+                        PowerSetter.setPower(PowerSetter.getPOWER() - 10);
+                    } catch (SerialPortException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case A-> {
+                    System.out.println("Кнопка A нажата,включаем Auto Ranging для M_fast ");
+                    yAxisLineChartWeight.setAutoRanging(true);                }
+                case S -> {
+                    System.out.println("Кнопка S нажата,включаем Manual Ranging для M_fast ");
+                    yAxisLineChartWeight.setAutoRanging(false);
+                    int LowerBound = (int) yAxisLineChartWeight.getLowerBound();
+                    yAxisLineChartWeight.setLowerBound(LowerBound);
+                    yAxisLineChartWeight.setUpperBound(LowerBound+DataTransfer.dataParam.getManualRangingSpan()*2);
+                }
+                case Z -> {
+                    if (!yAxisLineChartWeight.isAutoRanging()){
+                        System.out.println("Кнопка Z нажата,Manual Ranging включен, снижаем диапазон на 500 ");
+                        int LowerBound = (int) yAxisLineChartWeight.getLowerBound();
+                        yAxisLineChartWeight.setLowerBound(LowerBound-DataTransfer.dataParam.getManualRangingSpan());
+                        yAxisLineChartWeight.setUpperBound(LowerBound+DataTransfer.dataParam.getManualRangingSpan());
+                    }
+
+                }
+                case X -> {
+                    if (!yAxisLineChartWeight.isAutoRanging()){
+                        System.out.println("Кнопка X нажата,Manual Ranging включен, повышаем диапазон на 500 ");
+                        int LowerBound = (int) yAxisLineChartWeight.getLowerBound();
+                        yAxisLineChartWeight.setLowerBound(LowerBound+DataTransfer.dataParam.getManualRangingSpan());
+                        yAxisLineChartWeight.setUpperBound(LowerBound+DataTransfer.dataParam.getManualRangingSpan()*3);
+                    }
+                }
+            }
+        });
     }
 
 }

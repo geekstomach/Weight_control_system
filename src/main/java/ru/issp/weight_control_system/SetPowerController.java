@@ -5,10 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
 import ru.issp.weight_control_system.utils.PowerSetter;
@@ -32,6 +29,10 @@ public class SetPowerController implements Initializable {
     public Button stopCooling;
     public TextField setCoolingTimeArea;
     public Label currentPowerLabel;
+    public Spinner<Integer> manualRangingSpanSpinner;
+    public Spinner<Integer> readTactSpinner;
+    public Spinner<Integer> modelTactSpinner;
+
 
     private Scene getWeightScene;
 
@@ -113,6 +114,8 @@ currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cooling = false;
         currentPowerLabel.setText("0");
+        initSpinnerDefaultValue();
+        initSpinnerListener();
     }
 
     public void setGetWeightScene(Scene scene) {
@@ -122,5 +125,24 @@ currentPowerLabel.setText(Integer.toString(PowerSetter.getPOWER()));
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         primaryStage.setScene(getWeightScene);
 
+    }
+    private void initSpinnerDefaultValue(){
+manualRangingSpanSpinner.getValueFactory().setValue(DataTransfer.dataParam.getManualRangingSpan());
+readTactSpinner.getValueFactory().setValue(DataTransfer.dataParam.getReadTact());
+modelTactSpinner.getValueFactory().setValue(DataTransfer.dataParam.getModelTact());
+    }
+    private void initSpinnerListener() {
+/*        manualRangingSpanSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            System.out.println("Значение Manual Ranging изменилось с " + oldValue + " на " + newValue);
+            DataTransfer.dataParam.setManualRangingSpan(newValue);
+        });
+        readTactSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            System.out.println("Значение readTact изменилось с " + oldValue + " на " + newValue);
+            DataTransfer.dataParam.setReadTact(newValue);
+        });
+        modelTactSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            System.out.println("Значение modelTact изменилось с " + oldValue + " на " + newValue);
+            DataTransfer.dataParam.setModelTact(newValue);
+        });*/
     }
 }

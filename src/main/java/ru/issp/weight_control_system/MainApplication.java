@@ -60,7 +60,7 @@ public class MainApplication extends Application {
 
 
         // set listener to provide control power by keyboard
-        getWeightScene.setOnKeyPressed(event -> {
+        /*getWeightScene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case W -> {
                     System.out.println("Кнопка W нажата, увеличиваем мощность на 10 единиц");
@@ -78,8 +78,32 @@ public class MainApplication extends Application {
                         e.printStackTrace();
                     }
                 }
+                case A-> {
+                    System.out.println("Кнопка A нажата,включаем Auto Ranging для M_fast ");
+                    getWeightController.yAxisLineChartWeight.setAutoRanging(true);                }
+                case S -> {
+                    getWeightController.yAxisLineChartWeight.setAutoRanging(false);
+                    int LowerBound = (int) getWeightController.yAxisLineChartWeight.getLowerBound();
+                    getWeightController.yAxisLineChartWeight.setLowerBound(LowerBound);
+                    getWeightController.yAxisLineChartWeight.setUpperBound(LowerBound+1000);
+                }
+                case Z -> {
+                    if (!getWeightController.yAxisLineChartWeight.isAutoRanging()){
+                        int LowerBound = (int) getWeightController.yAxisLineChartWeight.getLowerBound();
+                        getWeightController.yAxisLineChartWeight.setLowerBound(LowerBound-500);
+                        getWeightController.yAxisLineChartWeight.setUpperBound(LowerBound+500);
+                    }
+
+                }
+                case X -> {
+                    if (!getWeightController.yAxisLineChartWeight.isAutoRanging()){
+                        int LowerBound = (int) getWeightController.yAxisLineChartWeight.getLowerBound();
+                        getWeightController.yAxisLineChartWeight.setLowerBound(LowerBound+500);
+                        getWeightController.yAxisLineChartWeight.setUpperBound(LowerBound+1500);
+                    }
+                }
             }
-        });
+        });*/
 
     }
 

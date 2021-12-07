@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 //Немного примеров
 //https://poi.apache.org/components/spreadsheet/quick-guide.html#NewWorkbook
-
+//Добавить возможность записи в файл
 public class ExcelFileWriter{
     static Workbook workbook = new XSSFWorkbook();
     //static CreationHelper createHelper = workbook.getCreationHelper();

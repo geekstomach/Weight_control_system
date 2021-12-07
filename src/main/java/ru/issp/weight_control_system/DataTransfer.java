@@ -1,6 +1,7 @@
 package ru.issp.weight_control_system;
 
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jssc.SerialPortException;
 import ru.issp.weight_control_system.Model.ModelProperty;
@@ -8,6 +9,7 @@ import ru.issp.weight_control_system.ProdCons.ExcelFileWriter;
 import ru.issp.weight_control_system.ProdCons.FromByteToWeight;
 import ru.issp.weight_control_system.data.DataAll;
 import ru.issp.weight_control_system.data.DataParam;
+import ru.issp.weight_control_system.utils.Filters;
 import ru.issp.weight_control_system.utils.PowerSetter;
 
 import java.io.FileNotFoundException;
@@ -24,11 +26,15 @@ public class DataTransfer {
 static AtomicBoolean IsModelCalculationsStarted = new AtomicBoolean(false);
 static AtomicBoolean IsPowerControlStarted = new AtomicBoolean(false);
 static  DataParam dataParam = new DataParam();
-static int modelTact = 3;
-static int readTact = 1;
 
 
-    public static void transferData(ObservableList<ModelProperty> sourceList, ObservableList<Double> realMassList, ObservableList<Double> modelRadiusList) throws FileNotFoundException {
+
+    public static void transferData(ObservableList<ModelProperty> sourceList, ObservableList<Double> realMassList, ObservableList<Double> filteredRadiusList) throws FileNotFoundException {
+
+
+        ObservableList<Double> modelRadiusList = FXCollections.observableArrayList();
+
+        filteredRadiusList.add(0d);
 
 //инициализируем получение данных
         BlockingQueue<byte[]> q = new LinkedBlockingQueue<>();
@@ -37,6 +43,7 @@ static int readTact = 1;
         TestData testData = new TestData();
         FromByteToWeight c1 = new FromByteToWeight(q);
         ScheduledExecutorService scheduledExecutorService;
+
 
         DataAll dataAll = new DataAll();
 //Запускаем получение данных
@@ -93,9 +100,10 @@ static int readTact = 1;
 
             //расчет радиуса
             if (realMassList.size()>=2) {
-            modelRadiusList.add(calcRealR((realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2))/readTact));
+            modelRadiusList.add(calcRealR((realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2))/dataParam.getReadTact()));
+            filteredRadiusList.add(Filters.lowPassFilter(modelRadiusList,filteredRadiusList,60,dataParam.getModelTact()*dataParam.getReadTact()));
             }
-
+            System.out.println(filteredRadiusList.get(filteredRadiusList.size()-1));
             //TODO добавить расчет уровня расплава
             //TODO проверить согласование данных с текущеЙ и расчетной массы
             //следующий блок работает раз в modelTact
@@ -103,7 +111,7 @@ static int readTact = 1;
             //увеличиваем счетчик циклов расчета
             globalCount.incrementAndGet();
 
-        }, 0, readTact, TimeUnit.SECONDS);
+        }, 0, dataParam.getReadTact(), TimeUnit.SECONDS);
 
     }
 
@@ -159,7 +167,7 @@ static int readTact = 1;
     private static void modelCalculationsTest(AtomicInteger globalCount,AtomicLong startLocal,ObservableList<ModelProperty> sourceList, ObservableList<Double> realMassList, DataAll dataAll){
         //При каждом запуске расчетов проверяем пусты ли массивы и инициализируем первым значением текущей массы
         //При каждом начале расчетов инициализируем массивы
-        if (IsModelCalculationsStarted.get()&&sourceList.size()==0&&globalCount.get()%modelTact==0){
+        if (IsModelCalculationsStarted.get()&&sourceList.size()==0&&globalCount.get()% dataParam.getModelTact()==0){
             System.out.println("Сработал if инициализации");
             System.out.println(sourceList.size());
             System.out.println(dataAll);
@@ -180,7 +188,7 @@ static int readTact = 1;
         }
         //startModelCalculations
 
-        if (globalCount.get()%modelTact==0&&IsModelCalculationsStarted.get()){
+        if (globalCount.get()%dataParam.getModelTact()==0&&IsModelCalculationsStarted.get()){
 
 /*            System.out.println("Проверка предыдущих значений до{"+
                     "prevMassDeviation"+dataAll.getMassDeviation().getLast()+"\n"+
@@ -188,7 +196,7 @@ static int readTact = 1;
                     "prevMassSecondDerivativeDeviation"+dataAll.getMassSecondDerivativeDeviation().getLast()+"}");*/
 
                     String localTime = createDateFormatForTableView().format(System.currentTimeMillis() - startLocal.get());
-            int dt = modelTact*readTact;
+            int dt = dataParam.getModelTact()*dataParam.getReadTact();
             //берем последний добавленный элемент в realMassList, текущую массу
             double realMass = realMassList.get(realMassList.size()-1);
             double modelMass = dataAll.getModelMass().getLast();
@@ -229,10 +237,10 @@ static int readTact = 1;
 
             double length = 0;
             double meltLevelHeight = 0;
-            double realRadius = calcRealR((realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2))/readTact);
+            double realRadius = calcRealR((realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2))/dataParam.getReadTact());
             double modelRadius = 0;
             if((dataAll.getModelMass().size()-2)>=0){
-                modelRadius = calcRealR((dataAll.getModelMass().getLast()-dataAll.getModelMass().get(dataAll.getModelMass().size()-2))/modelTact);
+                modelRadius = calcRealR((dataAll.getModelMass().getLast()-dataAll.getModelMass().get(dataAll.getModelMass().size()-2))/dataParam.getModelTact());
 
  /*           System.out.println("Mass rate{" +"\n"+
                     "real Mass rate=" + ((realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2))/readTact) +"\n"+
@@ -311,7 +319,7 @@ static int readTact = 1;
     private static void modelCalculations(AtomicInteger globalCount,AtomicLong startLocal,ObservableList<ModelProperty> sourceList, ObservableList<Double> realMassList, DataAll dataAll){
         //При каждом запуске расчетов проверяем пусты ли массивы и инициализируем первым значением текущей массы
         //При каждом начале расчетов инициализируем массивы
-        if (IsModelCalculationsStarted.get()&&sourceList.size()==0&&globalCount.get()%modelTact==0){
+        if (IsModelCalculationsStarted.get()&&sourceList.size()==0&&globalCount.get()%dataParam.getModelTact()==0){
             dataAll.initModelMass(realMassList.get(realMassList.size()-1));
             startLocal.set(System.currentTimeMillis());
         }
@@ -323,10 +331,10 @@ static int readTact = 1;
         }
         //startModelCalculations
 
-        if (globalCount.get()%modelTact==0&&IsModelCalculationsStarted.get()){
+        if (globalCount.get()%dataParam.getModelTact()==0&&IsModelCalculationsStarted.get()){
 
             String localTime = createDateFormatForTableView().format(System.currentTimeMillis() - startLocal.get());
-            int dt = modelTact*readTact;
+            int dt = dataParam.getModelTact()*dataParam.getReadTact();
             //берем последний добавленный элемент в realMassList, текущую массу
             double realMass = realMassList.get(realMassList.size()-1);
             double modelMass = dataAll.getModelMass().getLast();
@@ -352,10 +360,10 @@ static int readTact = 1;
 
             double length = 0;
             double meltLevelHeight = 0;
-            double realRadius = calcRealR((realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2))/readTact);
+            double realRadius = calcRealR((realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2))/dataParam.getReadTact());
             double modelRadius = 0;
             if((dataAll.getModelMass().size()-2)>=0){
-                modelRadius = calcRealR((dataAll.getModelMass().getLast()-dataAll.getModelMass().get(dataAll.getModelMass().size()-2))/modelTact);
+                modelRadius = calcRealR((dataAll.getModelMass().getLast()-dataAll.getModelMass().get(dataAll.getModelMass().size()-2))/dataParam.getModelTact());
 }
 
             double integralPartOfThePower = dataParam.getKi() * (massDeviation-prevMassDeviation);
@@ -429,4 +437,5 @@ static int readTact = 1;
         numerator2 = Math.PI * dataParam.getRol() * dataParam.getS_die_cr() * Math.pow(dataParam.getR_cruc(), 2) * dataParam.getV_lower();
         return (numerator1 - numerator2) / denominator;
     }
+
 }

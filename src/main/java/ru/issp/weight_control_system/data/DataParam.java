@@ -39,6 +39,35 @@ public class  DataParam {
 //радиус кристалла
     private double r = 10.000;
 
+    public int getManualRangingSpan() {
+        return manualRangingSpan;
+    }
+
+    public void setManualRangingSpan(int manualRangingSpan) {
+        this.manualRangingSpan = manualRangingSpan;
+    }
+
+    private int manualRangingSpan = 1000;
+
+    public int getModelTact() {
+        return modelTact;
+    }
+
+    public void setModelTact(int modelTact) {
+        this.modelTact = modelTact;
+    }
+
+    public int getReadTact() {
+        return readTact;
+    }
+
+    public void setReadTact(int readTact) {
+        this.readTact = readTact;
+    }
+
+    private int modelTact = 2;
+    private int readTact = 1;
+
 
     public double getR_cruc() {
         return R_cruc;
