@@ -21,11 +21,11 @@ public class Filters {
     public static double lowPassFilter(ObservableList<Double> realList,ObservableList<Double> filteredList, double period, int tick){
         if ((realList.size()>=2)&&(filteredList.size()>=2)){
             double xCurrent = realList.get(realList.size()-1)-filteredList.get(filteredList.size()-1);
-            System.out.println("xCurrent = "+xCurrent+" = "+ realList.get(realList.size()-1)+" - "+ filteredList.get(filteredList.size()-1));
+           // System.out.println("xCurrent = "+xCurrent+" = "+ realList.get(realList.size()-1)+" - "+ filteredList.get(filteredList.size()-1));
             double xPrevious = realList.get(realList.size()-2)-filteredList.get(filteredList.size()-2);
-            System.out.println("xPrevious = "+xPrevious+" = "+ realList.get(realList.size()-2)+" - "+ filteredList.get(filteredList.size()-2));
+           // System.out.println("xPrevious = "+xPrevious+" = "+ realList.get(realList.size()-2)+" - "+ filteredList.get(filteredList.size()-2));
 
-            return filteredList.get(filteredList.size()-1)+(tick/(2*period))*(xCurrent+xPrevious);}
+            return filteredList.get(filteredList.size()-1)+((double) tick /(2*period))*(xCurrent+xPrevious);}
 
         return 0d;}
     }

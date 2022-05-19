@@ -12,7 +12,7 @@ public class TestData implements Runnable {
 
     private final LinkedBlockingQueue<Double> outputQueue = new LinkedBlockingQueue<>();
     double currentMass = 0L;
-    double deviationMass = 1.31780276313365d;
+    double deviationMass = 0.00032d;
     Random random = new Random();
     //double deviationMass = 10d;
     @Override

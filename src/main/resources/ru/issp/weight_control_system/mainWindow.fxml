@@ -43,7 +43,7 @@
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="r/Weight" />
-                                <String fx:value="Power/SMAWeight" />
+                                <String fx:value="PowerDeviation/SMAWeight" />
                                 <String fx:value="massDeviation/massFirstDerivativeDeviation" />
                             </FXCollections>
                         </items>
@@ -64,7 +64,7 @@
                <RowConstraints />
                <RowConstraints />
                 </rowConstraints>
-                <LineChart fx:id="lineChartRadius" animated="false" legendVisible="false" prefHeight="349.0" prefWidth="1600.0"  stylesheets="@../../../css/lineChart.css" title="Радиус">
+                <LineChart fx:id="lineChartRadius" animated="false" legendVisible="false" prefHeight="349.0" prefWidth="1600.0" stylesheets="@../../../css/lineChart.css" title="Радиус">
 
                     <xAxis>
                         <CategoryAxis label="Время" side="BOTTOM" fx:id="xAxisLineChartRadius" />
@@ -78,15 +78,15 @@
                         <CategoryAxis label="Время" side="BOTTOM" fx:id="xAxisLineChartMassDeviation" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis fx:id="yAxisLineChartMassDeviation" label="мг" side="RIGHT" />
+                        <NumberAxis fx:id="yAxisLineChartMassDeviation" label="Вес, г" side="RIGHT" />
                     </yAxis>
                 </LineChart>
-                <LineChart fx:id="lineChartCurrentPower" animated="false" legendVisible="false" prefWidth="106.0" title="CurrentPower" visible="false">
+                <LineChart fx:id="lineChartPowerDeviation" animated="false" legendVisible="false" prefWidth="106.0" title="PowerDeviation" visible="false">
                     <xAxis>
-                        <CategoryAxis label="Время" side="BOTTOM" fx:id="xAxisLineChartCurrentPower" />
+                        <CategoryAxis label="Время" side="BOTTOM" fx:id="xAxisLineChartPowerDeviation" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis fx:id="yAxisLineChartCurrentPower" label="Мощность, кВт" side="RIGHT" />
+                        <NumberAxis fx:id="yAxisLineChartPowerDeviation" label="Мощность, кВт" side="RIGHT" />
                     </yAxis>
                 </LineChart>
                 <Separator prefWidth="200.0" GridPane.rowIndex="1" />
@@ -95,7 +95,7 @@
                         <NumberAxis label="Время" side="BOTTOM" fx:id="xAxisLineChartWeight" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis fx:id="yAxisLineChartWeight" forceZeroInRange="false" label="Вес, мг" side="RIGHT" />
+                        <NumberAxis fx:id="yAxisLineChartWeight" forceZeroInRange="false" label="Вес, г" side="RIGHT" />
                     </yAxis>
                 </LineChart>
                 <LineChart fx:id="lineChartMassFirstDerivativeDeviation" animated="false" legendVisible="false" prefWidth="106.0" title="MassFirstDerivativeDeviation" visible="false" GridPane.rowIndex="2">
@@ -103,7 +103,7 @@
                         <CategoryAxis label="Время" side="BOTTOM" fx:id="xAxisLineChartMassFirstDerivativeDeviation" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis fx:id="yAxisLineChartMassFirstDerivativeDeviation" label="мг/c" side="RIGHT" />
+                        <NumberAxis fx:id="yAxisLineChartMassFirstDerivativeDeviation" label="г/c" side="RIGHT" />
                     </yAxis>
                 </LineChart>
                 <LineChart fx:id="lineChartSMAWeight" animated="false" legendVisible="false" prefWidth="106.0" title="SMAWeight" visible="false" GridPane.rowIndex="2">
@@ -111,7 +111,7 @@
                         <CategoryAxis label="Время" side="BOTTOM" fx:id="xAxisLineChartSMAWeight" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis fx:id="yAxisLineChartSMAWeight" label="Вес, мг" side="RIGHT" />
+                        <NumberAxis fx:id="yAxisLineChartSMAWeight" label="Вес, г" side="RIGHT" />
                     </yAxis>
                 </LineChart>
             </GridPane>
@@ -142,6 +142,24 @@
                     <Insets />
                 </opaqueInsets>
             </Separator>
+         <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Постоянная времени">
+            <font>
+               <Font size="16.0" />
+            </font>
+            <padding>
+               <Insets left="5.0" right="5.0" top="5.0" />
+            </padding>
+         </Label>
+         <Spinner fx:id="lowPassFilterPeriodSpinner" amountToStepBy="0.01" editable="true" max="100.0" min="0.01" prefHeight="35.0" prefWidth="218.0">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+         </Spinner>
+         <Separator prefHeight="20.0" prefWidth="200.0">
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+         </Separator>
            <Pane prefHeight="92.0" prefWidth="166.0" style="-fx-border-color: black;">
                 <padding>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -149,9 +167,9 @@
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                 </VBox.margin>
-                <Label alignment="CENTER" contentDisplay="TOP" layoutX="20.0" layoutY="-26.0" prefHeight="32.0" prefWidth="120.0" style="-fx-background-color: cfd8dc;" text="SMA Radius,мм" wrapText="true">
+                <Label alignment="CENTER" contentDisplay="TOP" layoutX="10.0" layoutY="-26.0" prefHeight="48.0" prefWidth="136.0" style="-fx-background-color: cfd8dc;" text="SMA Radius,мм" wrapText="true">
                     <font>
-                        <Font size="22.0" />
+                        <Font size="16.0" />
                     </font>
                     <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -204,7 +222,7 @@
     </right>
     <left>
         <VBox prefWidth="180.0" BorderPane.alignment="CENTER">
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Скорость вытягивания">
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="V, mm/h">
                 <font>
                     <Font size="16.0" />
                 </font>
@@ -215,7 +233,7 @@
                     <Insets left="5.0" right="5.0" top="5.0" />
                 </padding>
             </Label>
-            <Spinner fx:id="pullingRateSpinner" amountToStepBy="0.01" editable="true" max="10.0" min="0.01" prefHeight="35.0" prefWidth="218.0">
+            <Spinner fx:id="pullingRateSpinner" amountToStepBy="1.0" editable="true" max="1000.0" min="1.0" prefHeight="35.0" prefWidth="218.0">
                 <VBox.margin>
                     <Insets left="10.0" right="10.0" />
                 </VBox.margin>
@@ -223,7 +241,7 @@
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding>
             </Spinner>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Радиус  кристалла">
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Радиус кристалла, мм">
                 <font>
                     <Font size="16.0" />
                 </font>

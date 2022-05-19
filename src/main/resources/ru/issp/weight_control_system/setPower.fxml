@@ -10,7 +10,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: cfd8dc;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.issp.weight_control_system.SetPowerController">
  <VBox alignment="TOP_CENTER" layoutX="-2.0" prefHeight="800.0" prefWidth="1280.0" spacing="10">
@@ -26,39 +28,62 @@
         <padding>
             <Insets bottom="10" left="10" right="10" top="10" />
         </padding>
-        <Button fx:id="setPower" onAction="#SetPowerButtonClicked" text="setPower" />
-         <TextField fx:id="setPowerArea" prefHeight="26.0" prefWidth="195.0" promptText="Введите значение от 0 до 10000" />
-         <Label fx:id="currentPowerLabel" prefHeight="18.0" prefWidth="253.0" />
+         <Pane prefHeight="163.0" prefWidth="659.0">
+            <children>
+               <Label layoutX="66.0" layoutY="-3.0" prefHeight="18.0" prefWidth="253.0" text="Set power" textAlignment="CENTER">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+                <Label fx:id="currentPowerLabel" layoutX="66.0" layoutY="-3.0" prefHeight="18.0" prefWidth="253.0" textAlignment="CENTER">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+               <TextField fx:id="setPowerTextField" layoutX="95.0" layoutY="56.0" prefHeight="26.0" prefWidth="195.0" promptText="Введите значение от 0 до 10000" />
+              <Button fx:id="setPowerButton" layoutY="57.0" onAction="#SetPowerButtonClicked" text="setPower" />
+            </children>
+         </Pane>
+         <Separator orientation="VERTICAL" prefHeight="200.0" />
+         <Pane prefHeight="163.0" prefWidth="659.0">
+            <children>
+               <Label layoutX="94.0" prefHeight="18.0" prefWidth="253.0" text="Heating">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+               <Button fx:id="startHeatingButton" layoutX="21.0" layoutY="144.0" onAction="#StartHeatingButtonClicked" text="start Heating" />
+               <Button fx:id="stopHeatingButton" layoutX="136.0" layoutY="144.0" onAction="#StopHeatingButtonClicked" text="stop Heating" />
+               <TextField fx:id="heatingTimeTextField" layoutX="10.0" layoutY="87.0" prefHeight="26.0" prefWidth="234.0" promptText="Введите время разогрева в минутах" />
+               <ProgressBar fx:id="heatingProgressBar" layoutX="21.0" layoutY="117.0" prefWidth="200.0" progress="0.0" />
+               <TextField fx:id="heatingPowerTextField" layoutX="10.0" layoutY="52.0" prefHeight="26.0" prefWidth="234.0" promptText="Введите время разогрева в минутах" text="Введите требуемую мощность" />
+            </children>
+         </Pane>
+         <Separator orientation="VERTICAL" prefHeight="200.0" />
+         <Pane prefHeight="163.0" prefWidth="659.0">
+            <children>
+               <Label layoutX="70.0" layoutY="-3.0" prefHeight="18.0" prefWidth="253.0" text="Cooling">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+               <Button fx:id="startCoolingButton" layoutX="21.0" layoutY="136.0" onAction="#StartCoolingButtonClicked" text="start Cooling" />
+               <Button fx:id="stopCoolingButton" layoutX="137.0" layoutY="136.0" onAction="#StopCoolingButtonClicked" text="stop Cooling" />
+               <TextField fx:id="coolingTextField" layoutX="20.0" layoutY="55.0" prefHeight="26.0" prefWidth="234.0" promptText="Введите время охлаждения в минутах" />
+               <ProgressBar fx:id="coolingProgressBar" layoutX="27.0" layoutY="91.0" prefWidth="200.0" progress="0.0" />
+            </children>
+         </Pane>
+         <TextField fx:id="heatingTextField2" prefHeight="26.0" prefWidth="234.0" promptText="Введите время разогрева в минутах" />
     </HBox>
-      <HBox alignment="TOP_LEFT" spacing="10">
-         <padding>
-            <Insets bottom="10" left="10" right="10" top="10" />
-         </padding>
-         <children>
-            <Button fx:id="startCooling" onAction="#StartCoolingButtonClicked" text="start Cooling" />
-            <TextField fx:id="setCoolingTimeArea" prefHeight="26.0" prefWidth="234.0" promptText="Введите время охлаждения в минутах" />
-            <ProgressBar prefWidth="200.0" progress="0.0" />
-         </children>
-      </HBox>
-     <HBox alignment="TOP_LEFT" spacing="10">
-         <padding>
-             <Insets bottom="10" left="10" right="10" top="10" />
-         </padding>
-         <children>
-             <Button fx:id="stopCooling" onAction="#StopCoolingButtonClicked" text="stop Cooling" />
-         </children>
-     </HBox>
      <TextArea fx:id="textArea" prefHeight="90.0" prefWidth="546.0" wrapText="true">
 
      </TextArea>
       <Separator prefWidth="200.0" />
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Label  text="Manual ranging span" />
+            <Label text="Manual ranging span" />
             <Spinner fx:id="manualRangingSpanSpinner" amountToStepBy="10" editable="true" max="10000" min="10" />
-         <Label  text="readTact" />
-            <Spinner fx:id="readTactSpinner" amountToStepBy="1" editable="true" max="10" min="1" />
-         <Label  text="modelTact" />
+         <Label text="modelTact" />
             <Spinner fx:id="modelTactSpinner" amountToStepBy="1" editable="true" max="10" min="1" />
          </children>
       </HBox>

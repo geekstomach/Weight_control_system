@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
 import ru.issp.weight_control_system.Model.ModelProperty;
+import ru.issp.weight_control_system.ProdCons.TextFileWriter;
 import ru.issp.weight_control_system.utils.PowerSetter;
 import ru.issp.weight_control_system.utils.Singleton;
 
@@ -110,6 +111,7 @@ public class MainApplication extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
+        TextFileWriter.writer.close();
         Singleton.getInstance().closePort();
         //TODO Организовать выход из цикла поучения данных по смене флага отсюда
         Platform.exit();

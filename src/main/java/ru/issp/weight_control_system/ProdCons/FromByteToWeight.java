@@ -21,6 +21,7 @@ public class FromByteToWeight implements Runnable{
     double k = 0.23;
     long zeroValue = 4044534;
     //Используем если читаем из COM
+    //коэффициент k устанавливая так, чтобы получать значение в килограммах
     /*double k = 3.08;
     long zeroValue = 249557;*/
 
@@ -71,7 +72,7 @@ public class FromByteToWeight implements Runnable{
     public static long getLongFromBytes(byte[] rawData) {
         StringBuilder hexString = new StringBuilder();
 
-        for (int i = 2; i < 10; i++) {
+        for (int i = 3; i < 11; i++) {//TODO Важно, не посчитал открывающуюся скобку!!!и от того сдвинулось на регистр влево....
             hexString.append((char)rawData[i]);
             //System.out.print((char)rawData[i]);
         }
