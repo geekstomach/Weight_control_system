@@ -12,6 +12,8 @@ public class DataAll {
     LinkedList<Double> modelMassFirstDerivative;
     LinkedList<Double> massFirstDerivativeDeviation;
     LinkedList<Double> massSecondDerivativeDeviation;
+    LinkedList<Double> length;
+
 
     public void initModelMass(Double currentMass) {
         modelMass.add(currentMass);
@@ -19,6 +21,7 @@ public class DataAll {
         modelMassFirstDerivative.add(0d);
         massFirstDerivativeDeviation.add(0d);
         massSecondDerivativeDeviation.add(0d);
+        length.add(0d);
     }
 public void clear (){
        modelMass.clear();
@@ -26,8 +29,10 @@ public void clear (){
        modelMassFirstDerivative.clear();
        massFirstDerivativeDeviation.clear();
        massSecondDerivativeDeviation.clear();
-
+       length.clear();
 }
+
+
     public DataAll() {
         this.modelMass = new LinkedList<>();
         //modelMass.add(0d);
@@ -39,6 +44,7 @@ public void clear (){
         //modelFirstDerivativeDeviation.add(0d);
         this.massSecondDerivativeDeviation = new LinkedList<>();
         //modelSecondDerivativeDeviation.add(0d);
+        this.length = new LinkedList<>();
     }
 
 
@@ -69,6 +75,14 @@ public void clear (){
 
     public void setMassSecondDerivativeDeviation(LinkedList<Double> massSecondDerivativeDeviation) {
         this.massSecondDerivativeDeviation = massSecondDerivativeDeviation;
+    }
+
+    public LinkedList<Double> getLength() {
+        return length;
+    }
+
+    public void setLength(Double currentLength) {
+        this.length.add(currentLength);
     }
 
     @Override

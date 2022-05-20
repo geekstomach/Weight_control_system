@@ -45,17 +45,9 @@ public class TextThreeFileWriter {
             StringBuilder sb2 = new StringBuilder();
             StringBuilder sb3 = new StringBuilder();
 
-            sb1.append(time);
-            sb2.append(time);
-            sb3.append(time);
-
-sb1.append(linkedList.get(0)).append(linkedList.get(13)).append(linkedList.get(3));
-sb2.append(linkedList.get(15)).append(linkedList.get(5)).append(linkedList.get(6));
-sb3.append(linkedList.get(19)).append(linkedList.get(16)).append(linkedList.get(13));
-
-            sb1.append('\n');
-            sb2.append('\n');
-            sb3.append('\n');
+            sb1.append(time).append(' ').append(linkedList.get(0)).append(' ').append(linkedList.get(13)).append(' ').append(linkedList.get(3)).append('\n');
+            sb2.append(time).append(' ').append(linkedList.get(15)).append(' ').append(linkedList.get(5)).append(' ').append(linkedList.get(6)).append('\n');
+            sb3.append(time).append(' ').append(linkedList.get(19)).append(' ').append(linkedList.get(16)).append(' ').append(linkedList.get(13)).append('\n');
 
             writer1.append(sb1);
             writer2.append(sb2);

@@ -21,7 +21,8 @@ public class TestData implements Runnable {
 
             while (true){
                 Thread.sleep(10);
-                currentMass = currentMass + deviationMass + 0.01*random.nextGaussian();
+                //currentMass = currentMass + deviationMass + 0.01*random.nextGaussian();
+                currentMass = 0;
                 //currentMass = currentMass + deviationMass;
                 //currentMass = currentMass + (long)deviationMass +(long)(deviationMass*Math.random())-(long)(deviationMass*Math.random());
                 //System.out.println("Генерируем тестовые данные в TestData "+ currentMass);

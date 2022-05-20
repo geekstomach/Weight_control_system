@@ -167,7 +167,7 @@ static DataParamProperties dataParam = new DataParamProperties();
                 prevMassSecondDerivativeDeviation = dataAll.getMassSecondDerivativeDeviation().get(dataAll.getMassSecondDerivativeDeviation().size()-2);
             }
 //Расчет радиуса
-            double length = 0;
+            double length = dataAll.getLength().getLast();
             double meltLevelHeight = 0;
             double realRadius = calcRealR((realMassList.get(realMassList.size() - 1) - realMassList.get(realMassList.size() - 2))/dataParam.getReadTact());
             double modelRadius = 0;
@@ -231,7 +231,7 @@ static DataParamProperties dataParam = new DataParamProperties();
 
             modelMass = modelMass + modelMassFirstDerivative * dt;
             dataAll.getModelMass().add(modelMass);
-            length = dt*dataParam.getV_upper();
+            dataAll.setLength(dataAll.getLength().getLast() + dt*dataParam.getV_upper());;
             //если нажата кнопка начать управление мощностью
             setPower(powerDeviation);
             //обнуляем счетчик циклов расчета
